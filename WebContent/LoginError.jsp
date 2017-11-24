@@ -4,9 +4,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>登陆失败</title>
 </head>
 <body>
-
+opps, 输入的账户信息有错误呢..
+<a href="Login.jsp">重新登陆</a>
 </body>
 </html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>UI设计页面</title><!--
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+  --><link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+  <script src="https://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+  
+  
+ <script>
+var x=document.getElementById("demo");
+function getLocation()
+  {
+  if (navigator.geolocation)
+    {
+    navigator.geolocation.getCurrentPosition(showPosition,showError);
+    }
+  else{x.innerHTML="Geolocation is not supported by this browser.";}
+  }
+function showPosition(position)
+  {
+  x.innerHTML="Latitude: " + position.coords.latitude + 
+  "<br />Longitude: " + position.coords.longitude;	
+  }
+function showError(error)
+  {
+  switch(error.code) 
+    {
+    case error.PERMISSION_DENIED:
+      x.innerHTML="User denied the request for Geolocation."
+      break;
+    case error.POSITION_UNAVAILABLE:
+      x.innerHTML="Location information is unavailable."
+      break;
+    case error.TIMEOUT:
+      x.innerHTML="The request to get user location timed out."
+      break;
+    case error.UNKNOWN_ERROR:
+      x.innerHTML="An unknown error occurred."
+      break;
+    }
+  }
+</script>
+  
+  
+	<style>
+		body
+		{
+		margin:0px;
+		padding:0px;
+		font-size:36px;
+		}
+		#bottom-box
+		{
+		position:fixed;
+		bottom:0px;
+		width:100%;
+		border:1px solid black;
+		}
+		#btn-line
+		{
+		float:left;
+		border:red solid 1px;
+		}
+		#info-line
+		{
+		float:left;
+		border:blue solid 1px;
+		}
+		#pf-pic
+		{
+		width:32px;
+		height:32px;
+		float:right;
+		border:1px solid black;
+		}
+		
+		.btns
+		{
+		height:60px;
+		width:32px;
+		border:red solid 1px;
+		font-size:48px;
+		margin-left:24px;
+		}
+		
+	</style>  
+</head>
+<body>
+
+<p id="demo">点击这个按钮，获得您的坐标：</p>
+<button onclick="getLocation()">试一下</button>
+
+<div id="bottom-box">
+<!-- 信息行 -->
+<div id="info-line">玩家信息</div>
+
+<!-- 按钮行 -->
+<div id="btn-line">
+	<span  class="btns" data-toggle="modal" data-target="#modal_info">信息</span>
+	<span class="btns" data-toggle="modal" data-target="#modal_inv">背包</span>
+	<span class="btns"  data-toggle="modal" data-target="#modal_soc">社交</span>
+	<span class="btns">设置</span>
+</div>
+
+<!-- 头像 -->
+<div id="pf-pic">头像</div>
+
+</div>
+
+
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal_info">
+    打开模态框
+  </button>
+
+<div class="container">
+<!-- 模态框 玩家信息 -->
+  <div class="modal fade" id="modal_info">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+   
+        <!-- 模态框头部 -->
+        <div class="modal-header">
+          <h4 class="modal-title">玩家信息</h4><h5>玩家名</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+   
+        <!-- 模态框主体 -->
+        <div class="modal-body" id="modal_info_body">
+          玩家信息
+        </div>
+   
+        <!-- 模态框底部 -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+        </div>
+   
+      </div>
+    </div>
+  </div>
+  
+<!-- 模态框 背包栏 -->
+  <div class="modal fade" id="modal_inv">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+   
+        <!-- 模态框头部 -->
+        <div class="modal-header">
+          <h4 class="modal-title">背包</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+   
+        <!-- 模态框主体 -->
+        <div class="modal-body" id="modal_info_body">
+          背包信息
+        </div>
+   
+        <!-- 模态框底部 -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+        </div>
+   
+      </div>
+    </div>
+  </div>
+  
+<!-- 模态框 社交栏 -->
+  <div class="modal fade" id="modal_soc">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+   
+        <!-- 模态框头部 -->
+        <div class="modal-header">
+          <h4 class="modal-title">社交</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+   
+        <!-- 模态框主体 -->
+        <div class="modal-body" id="modal_soc_body">
+         社交信息
+        </div>
+   
+        <!-- 模态框底部 -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+        </div>
+   
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</body>
+</html>

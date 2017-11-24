@@ -8,11 +8,16 @@
 </head>
 <body>
 
+<%
+
+%>
 <form>
-
-
-
+	<input type="hidden" value="" name="act">
+	<input type="hidden" value="" name="amount">
 </form>
+<%
+
+%>
 
 </body>
 </html>

@@ -4,29 +4,29 @@
     pageEncoding="UTF-8"%>
 <%@ page import="servlet.*" %>
 <%
+new game.main.SMOMain();
+
 String username=Utils.get(request,"username");
 String password=Utils.get(request,"password");
 
 boolean as_admin="on".equals(Utils.get(request,"as-admin"));
 
+boolean passed=game.main.AccoHandler.check(username, password, as_admin);
 
-JSONObject json=new JSONObject();
-json.put("name1","value1");
-json.put("name2","value2");
-out.print(json.toString());
+out.print("if_passed=="+passed);
 
-
-boolean correct=false;
-
-// boolean correct=AccountHandler.check(username,password,as_admin);
-/*
-if(correct)
+if(passed)
 {
-	response.sendRedirect("GamePage.jsp");
+	session.setAttribute("username",username);
+	session.setAttribute("permission",(as_admin?"admin":"player"));
+	if(as_admin)
+		response.sendRedirect("AdminPage.jsp");
+	else
+		response.sendRedirect("GamePage.jsp");
 }
 else
 {
+	session.invalidate();
 	response.sendRedirect("LoginError.jsp");
 }
-*/
 %>
