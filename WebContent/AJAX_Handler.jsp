@@ -3,8 +3,6 @@
     pageEncoding="UTF-8"%>
 
 <%
-	System.out.println("收到一次请求");
-
 	new SMOMain();
 
 	// String username=servlet.Utils.get(request,"username");
@@ -91,7 +89,28 @@
 			json.put("status","passed");
 			break;
 			
+		case MSG.T_Qcraftinglist:
+			json.put("result",CraftHandler.getCanCraftList(username));
+			json.put("status","success");
+			break;
+		case MSG.T_Qcraftingraw:
+			json.put("result",CraftHandler.getCraftingRaw(Utils.get(request,"id_crafting")));
+			json.put("status","success");
+			break;
+		case MSG.T_Acraft:
+			CraftHandler.executeCrafting(username, Utils.get(request,"id_crafting"));
+			json.put("status","success");
+			break;
+		case MSG.T_Qcancraft:
+			System.out.println(username+"查询"+Utils.get(request,"id_crafting"));
+			json.put("result",CraftHandler.canCraft(username, Utils.get(request,"id_crafting")));
+			json.put("status","success");
+			break;
+			
 		default:
+			json.put("status","exception");
+			json.put("exception_info","动作不存在");
+			json.put("act_request",act);
 		}
 	}
 	catch(Exception e)

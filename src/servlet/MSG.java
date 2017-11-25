@@ -24,4 +24,10 @@ public class MSG {
 	final static public String T_Qentityfunclist="Qentityfunclist";
 	final static public String T_Aentityfunc="Aentityfunc";
 
+	
+	
+	final static public String T_Qcraftinglist="Qcraftinglist";
+	final static public String T_Qcraftingraw="Qcraftingraw";
+	final static public String T_Acraft="Acraft";
+	final static public String T_Qcancraft="Qcancraft";
 }

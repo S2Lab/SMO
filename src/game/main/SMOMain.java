@@ -35,6 +35,10 @@ public class SMOMain {
 			new FuncHandler();
 			log("动作处理机初始化完成");
 			
+			log("合成处理机开始初始化");
+			new CraftHandler();
+			log("合成处理机初始化完成");
+			
 			instance=this;
 			log("SMO主机初始化完成");
 		}
