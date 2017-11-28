@@ -18,7 +18,7 @@
 		switch(act)
 		{
 		case MSG.T_Aping: // 唤醒
-			ActHandler.F_Aping(username,Utils.get(request,"loc_x"),Utils.get(request,"loc_y"));
+			ActHandler.F_Aping(username,Utils.get(request,"loc_x"),Utils.get(request,"loc_y"),request.getRemoteAddr());
 			json.put("status","success");
 			break;
 			
@@ -56,6 +56,10 @@
 			
 		case MSG.T_Qinfo:
 			json.put("result",ActHandler.F_Qinfo(username));
+			json.put("status","success");
+			break;
+		case MSG.T_OQinfo:
+			json.put("result",ActHandler.F_Qinfo(Utils.get(request,"username")));
 			json.put("status","success");
 			break;
 			
@@ -102,10 +106,18 @@
 			json.put("status","success");
 			break;
 		case MSG.T_Qcancraft:
-			System.out.println(username+"查询"+Utils.get(request,"id_crafting"));
+			// System.out.println(username+"查询"+Utils.get(request,"id_crafting"));
 			json.put("result",CraftHandler.canCraft(username, Utils.get(request,"id_crafting")));
 			json.put("status","success");
 			break;
+			
+			
+			
+		case "checkUsernameExistence":
+			json.put("result",game.main.AccoHandler.checkUsernameExistence(Utils.get(request,"username")));
+			json.put("status","success");
+			break;
+
 			
 		default:
 			json.put("status","exception");

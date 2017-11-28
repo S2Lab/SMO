@@ -44,6 +44,7 @@ public class SMOMain {
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 			log("出现错误 终止初始化");
 		}
 	}

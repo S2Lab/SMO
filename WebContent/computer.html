@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>战斗计算器 by Firok</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" /> 
+    <style>
+    body
+    {
+        margin:0px;
+        padding:0px;
+    }
+    .input_box
+    {
+        width:50%;
+        float:left;
+        background-color:lightgreen;
+    }
+    .input_box:hover
+    {
+        background-color:lightblue;
+    }
+    input
+    {
+        width:50px;
+    }
+    </style>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min.js'></script>
+
+    
+</head>
+
+<body style="background-color:lightcyan">
+    <div id="computer" style="display:none"></div>
+    <div id="out_damage" style="display:none"></div>
+    <div>
+        <div id="input_box_A" class="input_box">
+            A的属性<br>
+            物攻<input type="numner" id="Ain_atk_p" value="10"><br>
+            物防<input type="numner" id="Ain_def_p" value="5"><br>
+            魔攻<input type="numner" id="Ain_atk_m" value="10"><br>
+            魔防<input type="numner" id="Ain_def_m" value="5"><br>
+            物理穿透<input type="numner" id="Ain_patk_p" value="0"><br>
+            魔法穿透<input type="numner" id="Ain_patk_m" value="0"><br>
+            速度<input type="numner" id="Ain_speed" value="5"><br>
+            命中<input type="numner" id="Ain_acc" value="5"><br>
+            HP<input type="numner" id="Ain_hp" value="100"><br>
+            HP恢复<input type="numner" id="Ain_hp_re" value="1"><br>
+            HP上限<input type="numner" id="Ain_hp_limit" value="100"><br>
+            
+        </div>
+        <div id="input_box_B" class="input_box">
+            B的属性<br>
+            物攻<input type="numner" id="Bin_atk_p" value="10"><br>
+            物防<input type="numner" id="Bin_def_p" value="5"><br>
+            魔攻<input type="numner" id="Bin_atk_m" value="10"><br>
+            魔防<input type="numner" id="Bin_def_m" value="5"><br>
+            物理穿透<input type="numner" id="Bin_patk_p" value="0"><br>
+            魔法穿透<input type="numner" id="Bin_patk_m" value="0"><br>
+            速度<input type="numner" id="Bin_speed" value="5"><br>
+            命中<input type="numner" id="Bin_acc" value="5"><br>
+            HP<input type="numner" id="Bin_hp" value="100"><br>
+            HP恢复<input type="numner" id="Bin_hp_re" value="1"><br>
+            HP上限<input type="numner" id="Bin_hp_limit" value="100"><br>
+        </div>
+    </div>
+    <div style="width:30%;float:left;background:lightseagreen;font-size:16px">
+        <script>
+            function quickAdd(cIn)    
+            {
+                document.getElementById('in_computer').value+=cIn;
+            }
+        </script>
+        <b>可以用的变量</b><br>
+        atk_p 物攻<button onclick="quickAdd('atk_p')">快速添加</button><br>
+        def_p 对方的 物防<button onclick="quickAdd('def_p')">快速添加</button><br>
+        atk_m 魔攻<button onclick="quickAdd('atk_m')">快速添加</button><br>
+        def_m 对方的 魔防<button onclick="quickAdd('def_m')">快速添加</button><br>
+        patk_p 物穿<button onclick="quickAdd('patk_p')">快速添加</button><br>
+        patk_m 魔穿<button onclick="quickAdd('patk_m')">快速添加</button><br>
+        speed 速度<button onclick="quickAdd('speed')">快速添加</button><br>
+        acc 命中<button onclick="quickAdd('acc')">快速添加</button><br>
+        <br>
+        Ahp A的当前血量<button onclick="quickAdd('Ahp')">快速添加</button><br>
+        Ahp_re A的回血<button onclick="quickAdd('Ahp_re')">快速添加</button><br>
+        Ahp_limit A的血上限<button onclick="quickAdd('Ahp_limit')">快速添加</button><br>
+        Bhp B的当前血量<button onclick="quickAdd('Bhp')">快速添加</button><br>
+        Bhp_re B的回血<button onclick="quickAdd('Bhp_re')">快速添加</button><br>
+        Bhp_limit B的血上限<button onclick="quickAdd('Bhp_limit')">快速添加</button><br>
+        <br>
+        rand(N1,N2) N1到N2之间的一个随机数<br> ( rand(80,100) 就是80到100之间的一个随机数 )
+        <br>
+        <b>可以用的运算符</b><br>
+        + - * / 加减乘除 ( 3 / 2 + 1 = 2.5)<br>
+        % 取余 ( 5 % 2 = 1)<br>
+        <br>
+        <br>
+        <br>
+        <b>战斗计算器 1.0 by Friok</b><br>
+    </div>
+    <div style="width:70%;float:left">
+        在下面输入公式<br>
+        <textarea name="" id="in_computer" style="width:90%;font-size:200%;height:100px;background-color:lightpink">atk_p * ( 100 / ( 100 + ( ( def_p - patk_p ) ) ) )</textarea><br>
+        <button onclick="resetComputer()" style="width:100px;height:50px">刷新计算公式</button>
+        <button onclick="startCompute()" style="width:100px;height:50px">开始计算</button>
+        <br>
+        当前公式为<br> 
+        <div id="out_current_computer" style="width:90%;border:1px solid black">
+            <br>
+        </div>
+        <br>
+        <br>
+        <div id="computer" style="display:none"></div>
+        战斗日志<br>
+        <div id="out_log_fight" style="width:90%;border:1px solid black;overflow:scroll;max-height:400px">
+            <br>
+            <br>
+        </div>
+
+    </div>
+</body>
+
+<script>
+    var atk_p;
+    var def_p;
+    var atk_m;
+    var def_m;
+    var speed;
+    var acc;
+    var patk_p;
+    var patk_m;
+    
+    var Ahp;
+    var Ahp_re;
+    var Ahp_limit;
+    var Bhp;
+    var Bhp_re;
+    var Bhp_limit;
+
+    function rand(rA,rB)
+    {
+        return Math.random()*(rB-rA) +rA;
+    }
+    
+    computer=document.getElementById("computer");
+    in_computer=document.getElementById("in_computer");
+    out_damage=document.getElementById("out_damage");
+    out_log=document.getElementById("out_log_fight");
+    function resetComputer()
+    {
+        if(in_computer.value.trim().length==0)
+            in_computer.value=0;
+        document.getElementById("out_current_computer").innerText=in_computer.value
+        computer.setAttribute("onclick","let result=0;result="+in_computer.value+";out_damage.innerText=result;");
+    }
+    
+    
+    
+    
+    
+  
+    function clearlog()
+    {
+        out_log.innerHTML="";
+    }
+    function log(logIn)
+    {
+        out_log.innerHTML+=logIn+"<br>";
+    }
+    
+    var damageA=0;
+    var damageB=0;
+    function computeDamageA()
+    {
+        getNewAttrsA();
+        $("#computer").click();
+        damageA=parseFloat(out_damage.innerText);
+    }
+    function getNewAttrsA()
+    {
+        atk_p=parseFloat($("#Ain_atk_p")[0].value);
+        atk_m=parseFloat($("#Ain_atk_m")[0].value);
+        def_p=parseFloat($("#Bin_def_p")[0].value);
+        def_m=parseFloat($("#Bin_def_m")[0].value);
+        speed=parseFloat($("#Ain_speed")[0].value);
+        acc=parseFloat($("#Ain_acc")[0].value);
+        patk_p=parseFloat($("#Ain_patk_p")[0].value);
+        ptak_m=parseFloat($("#Ain_patk_m")[0].value);
+        
+    }
+    function computeDamageB()
+    {
+        getNewAttrsB();
+        $("#computer").click();
+        damageB=parseFloat(out_damage.innerText);
+    }
+    function getNewAttrsB()
+    {
+        atk_p=parseFloat($("#Bin_atk_p")[0].value);
+        atk_m=parseFloat($("#Bin_atk_m")[0].value);
+        def_p=parseFloat($("#Ain_def_p")[0].value);
+        def_m=parseFloat($("#Ain_def_m")[0].value);
+        speed=parseFloat($("#Bin_speed")[0].value);
+        acc=parseFloat($("#Bin_acc")[0].value);
+        patk_p=parseFloat($("#Bin_patk_p")[0].value);
+        ptak_m=parseFloat($("#Bin_patk_m")[0].value);
+        
+    }
+    
+    function startCompute()
+    {  
+        Ahp=parseFloat($("#Ain_hp")[0].value);
+        Ahp_re=parseFloat($("#Ain_hp_re")[0].value);
+        Ahp_limit=parseFloat($("#Ain_hp_limit")[0].value);
+        Bhp=parseFloat($("#Bin_hp")[0].value);
+        Bhp_re=parseFloat($("#Bin_hp_re")[0].value);
+        Bhp_limit=parseFloat($("#Bin_hp_limit")[0].value);
+        clearlog();
+        log("开始计算");
+        // computeDamageA();
+        log("A 初始血量="+Ahp+",回血="+Ahp_re+",血量上限="+Ahp_limit);
+        // computeDamageB();
+        log("B 初始血量="+Bhp+",回血="+Bhp_re+",血量上限="+Bhp_limit);
+        
+        let step=0;
+        while(true)
+        {
+            log("第 "+(step+1)+" 回合");
+            
+            computeDamageA();
+            if(damageA==NaN)
+            {
+                log("计算出错 自动返回");
+                break;
+            }
+            Bhp-=damageA;
+            log("A本次伤害"+parseInt(damageA)+" <span style=\"font-size:50%\">"+damageB+"</span> , B血量 -> "+parseInt(Bhp)+" <span style=\"font-size:50%\">"+Bhp+"</span>");
+            if(Bhp<=0)
+            {
+                log("B没血了 A赢了");
+                break;
+            }
+            computeDamageB();
+            if(damageB==NaN)
+            {
+                log("计算出错 自动返回");
+                break;
+            }
+            Ahp-=damageB;
+            log("B本次伤害"+parseInt(damageB)+" <span style=\"font-size:50%\">"+damageB+"</span> , A血量 -> "+parseInt(Ahp)+" <span style=\"font-size:50%\">"+Ahp+"</span>");
+            
+            if(Ahp<=0)
+            {
+                log("A没血了 B赢了");
+                break;
+            }
+
+            Ahp+=Ahp_re;
+            // console.log("AHP"+Ahp);
+            Bhp+=Bhp_re;
+            // console.log("BHP"+Bhp);
+            Ahp=Ahp>Ahp_limit?Ahp_limit:Ahp;
+            Bhp=Bhp>Bhp_limit?Bhp_limit:Bhp;
+            log("计算回血 A剩余HP "+parseInt(Ahp)+" <span style=\"font-size:50%\">"+Ahp+"</span> B剩余HP "+parseInt(Bhp)+" <span style=\"font-size:50%\">"+Bhp+"</span>");
+            
+            if(step>100)
+            {
+                log("回合太多 自动停止计算");
+                break;
+            }
+            step++;
+        }
+        log("A 最终血量="+Ahp);
+        log("B 最终血量="+Bhp);
+    }
+    
+    </script>
+
+</html>

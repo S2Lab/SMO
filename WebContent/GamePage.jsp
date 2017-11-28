@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@page import="game.main.*,servlet.*" %>
+
+<%if(Utils.get(session,"username").equals("")) response.sendRedirect("Login.jsp");%>
+
  <html>
 <head>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
@@ -86,28 +89,33 @@ var map = new BMap.Map("container");
 // 创建地图实例  
 map.setMapStyle({style:'midnight'});
 map.disableDragging(true);
+map.disableContinuousZoom(true);
+map.disableDoubleClickZoom(true);
+map.disablePinchToZoom(true);
+map.disableScrollWheelZoom(true);
 
 var loc_x=121.363847;
 var loc_y=37.526844;
+
 // 按钮 - 移动
 function btn_click_move_up()
 {
-loc_y+=0.000020;
+loc_y+=0.000060;
 map_re_center();
 }
 function btn_click_move_left()
 {
-loc_x-=0.000020;
+loc_x-=0.000060;
 map_re_center();
 }
 function btn_click_move_right()
 {
-loc_x+=0.000020;
+loc_x+=0.000060;
 map_re_center();
 }
 function btn_click_move_down()
 {
-loc_y-=0.000020;
+loc_y-=0.000060;
 map_re_center();
 }
 // 重新定位地图
@@ -120,7 +128,7 @@ map_re_center();
 function map_re_center()
 {
 	// 创建点坐标  
-	map.centerAndZoom(new BMap.Point(loc_x,loc_y), 18);
+	map.centerAndZoom(new BMap.Point(loc_x,loc_y), 19);
 }
 map_re_center();
 </script>  
@@ -128,18 +136,53 @@ map_re_center();
 //加载所有基础信息
 function check_data()
 {
-    if(hasgot_data_item && hasgot_data_monster)
+    if(hasgot_data_item && hasgot_data_monster && hasgot_data_range)
     {
         // 获取完所有信息
         console.log("基础信息加载完成");
         
         data_item=JSON.parse(str_item.responseText);
         data_monster=JSON.parse(str_monster.responseText);
+        data_range=JSON.parse(str_range.responseText);
+        
+        
+        
+        // 处理多边形信息
+        data_range_polygons=[];
+        let step=0;
+        while(step<data_range.amounts)
+        {
+        	let points=[];
+        	let str_pos_array=data_range.pos[step].split(';'); // 拿到这一次的点集合
+        	let step2=0;
+        	let pos_line="";
+        	while(step2<str_pos_array.length)
+        	{
+        		pos_line=str_pos_array[step2].split(',');
+        		let point_to_add=new BMap.Point(parseFloat(pos_line[0]),parseFloat(pos_line[1]));
+        		points.push(point_to_add);
+        		
+            	
+        		step2++;
+        	}
+        	
+        	let Pnew = new BMap.Polygon(points, {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5} );
+        	data_range_polygons.push(Pnew);
+        	
+        	step++;
+        }
+        
+        
+        _refreshSurrs();
     }
+
 }
 // 用AJAX从服务器获取
 var data_item;var hasgot_data_item=false; // 所有的物品信息
 var data_monster;var hasgot_data_monster=false; // 所有的怪物信息
+var data_range;var hasgot_data_range=false; // 所有的range信息
+
+var data_range_polygons; // 处理后的多边形s
 
 var username="<%=Utils.get(session,"username")%>";
 console.log("玩家名为"+username);
@@ -150,6 +193,10 @@ var str_item=$.get("Data_Item_Handler.jsp",function(){
 });
 var str_monster=$.get("Data_Monster_Handler.jsp",function(){
     hasgot_data_monster=true;
+    check_data();
+});
+var str_range=$.get("Data_Range_Handler.jsp",function(){
+	hasgot_data_range=true;
     check_data();
 });
 
@@ -195,18 +242,32 @@ function modal_show_inv(jsonIn)
 {
     let target=document.getElementById("modal_inv_body");
     target.innerHTML="";
-    let step=0;
-    while(step<jsonIn.result.amounts)
-    {
-        target.innerHTML+=
-        	( (parseInt(jsonIn.result.slot[step]) >0) ? " <span style=\"color:green\">穿戴中</span> ":"")+
-		getItemNameById(jsonIn.result.id_item[step])+" × "+
-        jsonIn.result.amount[step]+" | "+
-        (getItemUsableById(jsonIn.result.id_item[step])? UI_InvItemUse(jsonIn.result.id_item[step],jsonIn.result.order[step]) :"")+
-        (getItemDropableById(jsonIn.result.id_item[step])? UI_InvItemDrop(jsonIn.result.id_item[step],jsonIn.result.order[step]) :"")+
-        UI_InvItemCheck(jsonIn.result.id_item[step],jsonIn.result.order[step])+
+    if(jsonIn.result.amounts==1)
+   	{
+    	target.innerHTML+=
+        	( (parseInt(jsonIn.result.slot) >0) ? " <span style=\"color:green\">穿戴中</span> ":"")+
+		getItemNameById(jsonIn.result.id_item)+" × "+
+        jsonIn.result.amount+" | "+
+        (getItemUsableById(jsonIn.result.id_item)? UI_InvItemUse(jsonIn.result.id_item,jsonIn.result.order) :"")+
+        (getItemDropableById(jsonIn.result.id_item)? UI_InvItemDrop(jsonIn.result.id_item,jsonIn.result.order) :"")+
+        UI_InvItemCheck(jsonIn.result.id_item,jsonIn.result.order)+
         "<br>";
-        step++;
+   	}
+    else
+    {
+	    let step=0;
+	    while(step<jsonIn.result.amounts)
+	    {
+	        target.innerHTML+=
+	        	( (parseInt(jsonIn.result.slot[step]) >0) ? " <span style=\"color:green\">穿戴中</span> ":"")+
+			getItemNameById(jsonIn.result.id_item[step])+" × "+
+	        jsonIn.result.amount[step]+" | "+
+	        (getItemUsableById(jsonIn.result.id_item[step])? UI_InvItemUse(jsonIn.result.id_item[step],jsonIn.result.order[step]) :"")+
+	        (getItemDropableById(jsonIn.result.id_item[step])? UI_InvItemDrop(jsonIn.result.id_item[step],jsonIn.result.order[step]) :"")+
+	        UI_InvItemCheck(jsonIn.result.id_item[step],jsonIn.result.order[step])+
+	        "<br>";
+	        step++;
+	    }
     }
 }
 	// 根据id获取这个item在数据序列中的位置
@@ -306,17 +367,18 @@ function modal_show_make(jsonIn)
 	// 查看详细
 	function btn_click_make_detail(idIn)
 	{
+		let str_to_show="";
 		let str_get_can=$.get("AJAX_Handler.jsp?act=Qcancraft&id_crafting="+idIn,function(){
-			console.log(str_get_can);
-			str_get_can=str_get_can.result;
-			console.log(str_get_can);
+			let json_get=JSON.parse(str_get_can.responseText);
+			str_get_can=json_get.result;
+			
+			str_to_show+=(str_get_can?"能合成":"不能合成")+"\n";
 		});; // 获取原材料
-		console.log("直接输出"+str_get_can);
 		let str_get_raws=$.get("AJAX_Handler.jsp?act=Qcraftingraw&id_crafting="+idIn,function(){
 			let json_get=JSON.parse(str_get_raws.responseText);
-			let text="";
+			str_to_show+=json_get;
 			
-			alert(json_get);
+			alert(str_to_show);
 		});; // 获取原材料
 	}
 	// 合成
@@ -347,6 +409,136 @@ function _toPing()
 }
 setInterval("_toPing()",5000);
 
+console.log("开始从服务器获取周围的东西");
+function _refreshSurrs() // 清空所有标记 显示新的标记
+{
+	map.clearOverlays(); // 移除原来的
+	
+	// 获取新的
+	let str_get_surrs_players=$.get("AJAX_Handler.jsp?act=SQsurrsPlayer",function(){
+		let json_get=JSON.parse(str_get_surrs_players.responseText);
+		let step=0;
+		while(step<json_get.result.amount)
+		{
+			_addSurrsPlayer( new BMap.Point(json_get.result.loc_x[step],json_get.result.loc_y[step]) ,step, json_get.result.username[step]+"");
+			step++;
+		}
+	});
+	
+	// 添加range
+	let step=0;
+	while(step<data_range_polygons.length)
+	{
+		map.addOverlay(data_range_polygons[step++]);
+	}
+
+}
+function _addSurrsPlayer(pointIn,indexIn,usernameIn)
+{
+	 var myIcon = new BMap.Icon("imgs/icon_player.png", new BMap.Size(32, 32), {    
+	        // 指定定位位置。   
+	        // 当标注显示在地图上时，其所指向的地理位置距离图标左上    
+	        // 角各偏移10像素和25像素。您可以看到在本例中该位置即是   
+	        // 图标中央下端的尖角位置。    
+	        anchor: new BMap.Size(16, 16),    
+	        // 设置图片偏移。   
+	        // 当您需要从一幅较大的图片中截取某部分作为标注图标时，您   
+	        // 需要指定大图的偏移位置，此做法与css sprites技术类似。    
+	        imageOffset: new BMap.Size(0, 0)   // 设置图片偏移    
+	    });      
+	    // 创建标注对象并添加到地图   
+	    var marker = new BMap.Marker(pointIn, {icon: myIcon});
+	    marker.addEventListener("click",function(){
+	    	// 在这里添加点击后的事件
+	    	$("#btn_modal_func").click();
+	    	
+	        func_modal_show_player(usernameIn);
+	        
+	    });
+	    map.addOverlay(marker);
+}
+function _addSurrRanges(idIn,nameIn,posIn,styleIn)
+{
+
+	let step=0;
+	while(step<pos.length)
+	{
+		// map.addOverlay(data_range_polygons[step]);
+		step++;
+	}
+	
+	
+	 
+    // 创建标注对象并添加到地图   
+    // var marker = new BMap.Marker(point, {icon: myIcon});     
+}
+function _addSurrsNPC(pointIn,indexIn)
+{
+	var myIcon = new BMap.Icon("imgs/icon_npc.png", new BMap.Size(32, 32), {    
+        // 指定定位位置。   
+        // 当标注显示在地图上时，其所指向的地理位置距离图标左上    
+        // 角各偏移10像素和25像素。您可以看到在本例中该位置即是   
+        // 图标中央下端的尖角位置。    
+        anchor: new BMap.Size(16, 16),    
+        // 设置图片偏移。   
+        // 当您需要从一幅较大的图片中截取某部分作为标注图标时，您   
+        // 需要指定大图的偏移位置，此做法与css sprites技术类似。    
+        imageOffset: new BMap.Size(0, 0)   // 设置图片偏移    
+    });      
+    // 创建标注对象并添加到地图   
+    var marker = new BMap.Marker(pointIn, {icon: myIcon});
+    marker.addEventListener("click",function(){
+    	// 在这里添加点击后的事件
+    	alert("npc clicked "+indexIn);
+    });
+    map.addOverlay(marker);
+}
+
+setInterval("_refreshSurrs()",100000);
+
+function func_modal_show_player(usernameIn)
+{
+	let target=document.getElementById("modal_func_body");
+	
+	let str_get=$.get("AJAX_Handler.jsp?act=OQinfo&username="+usernameIn,function(){
+
+		let json_get=JSON.parse(str_get.responseText);
+
+		
+		let target=document.getElementById("modal_func_body");
+		document.getElementById("modal_func_head").innerText=usernameIn;
+		
+	    target.innerHTML="";
+	    target.innerHTML+="物攻"+json_get.result.atk_p+"<br>";
+	    target.innerHTML+="物防"+json_get.result.def_p+"<br>";
+	    target.innerHTML+="魔攻"+json_get.result.atk_m+"<br>";
+	    target.innerHTML+="魔防"+json_get.result.def_m+"<br>";
+	    target.innerHTML+="速度"+json_get.result.speed+"<br>";
+	    target.innerHTML+="命中"+json_get.result.acc+"<br>";
+	    target.innerHTML+="生命上限"+json_get.result.hp_limit+"<br>";
+	    target.innerHTML+="生命恢复"+json_get.result.hp_re+"<br>";
+	    target.innerHTML+="魔法上限"+json_get.result.mp_limit+"<br>";
+	    target.innerHTML+="魔法恢复"+json_get.result.mp_re+"<br>";
+	    target.innerHTML+="主职业"+json_get.result.class+"<br>";
+	    target.innerHTML+="主职业等级"+json_get.result.lv+"<br>";
+	    target.innerHTML+="副职业"+json_get.result.class_sub+"<br>";
+	    target.innerHTML+="副职业等级"+json_get.result.lv_sub+"<br>";
+	    
+	    target.innerHTML+="<br>";
+	});
+    
+}
+function func_modal_show_npc(idRangeIn)
+{
+	let target=document.getElementById("modal_func_body");
+    // target.innerHTML="player"+indexIn+"modal";
+}
+function func_modal_show_shop(idRangeIn)
+{
+	let target=document.getElementById("modal_func_body");
+    // target.innerHTML="player"+indexIn+"modal";
+}
+
 </script>
 
 
@@ -368,10 +560,11 @@ setInterval("_toPing()",5000);
 	<span class="btns" data-toggle="modal" data-target="#modal_soc" onclick="btn_click_soc()">社交</span>
 	<span class="btns" data-toggle="modal" data-target="#modal_make" onclick="btn_click_make()">合成</span>
 	<span class="btns" data-toggle="modal" data-target="#modal_setting" onclick="btn_click_setting()">设置</span>
+	<span class="btns" data-toggle="modal" data-target="#modal_func" onclick="" id="btn_modal_func" style="display:none">动作</span>
 </div>
 
 <!-- 头像 -->
-<div id="pf-pic">头像</div>
+<div id="pf-pic"><img src="imgs/icon_player.png"></div>
 
 </div>
 
@@ -493,6 +686,32 @@ setInterval("_toPing()",5000);
         <!-- 模态框主体 -->
         <div class="modal-body" id="modal_setting_body">
         设置信息
+        </div>
+   
+        <!-- 模态框底部 -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+        </div>
+   
+      </div>
+    </div>
+  </div>
+  
+  
+  <!-- 模态框 动作栏 -->
+  <div class="modal fade" id="modal_func">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+   
+        <!-- 模态框头部 -->
+        <div class="modal-header">
+          <h4 class="modal-title" id="modal_func_head">动作</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+   
+        <!-- 模态框主体 -->
+        <div class="modal-body" id="modal_func_body">
+        动作信息
         </div>
    
         <!-- 模态框底部 -->

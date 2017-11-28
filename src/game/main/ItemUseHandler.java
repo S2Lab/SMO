@@ -80,6 +80,14 @@ public class ItemUseHandler {
 				case 2: // 测试物品2
 					DBAPI.Inventory_Edit(usernameIn,11, -1,5); // 给玩家5个金锭
 					break;
+					
+				case 283: // 新手套装礼包
+					DBAPI.Inventory_Edit(usernameIn, 600, -1, 1);
+					DBAPI.Inventory_Edit(usernameIn, 601, -1, 1);
+					DBAPI.Inventory_Edit(usernameIn, 602, -1, 1);
+					DBAPI.Inventory_Edit(usernameIn, 603, -1, 1);
+					DBAPI.Inventory_Edit(usernameIn, 200, -1, 5);
+					break;
 				default:
 					break;
 				}

@@ -92,7 +92,7 @@ public class DBAPI {
 			{
 				if(amount_to_change>0) // 增加数量 // 执行
 				{
-					stmt.executeUpdate("insert into inventory value('"+usernameIn+"',"+id_itemIn+","+amount_to_change+","+orderIn+","+getItemAttrSet(id_itemIn).slot+")");
+					stmt.executeUpdate("insert into inventory value('"+usernameIn+"',"+id_itemIn+","+amount_to_change+","+orderIn+",0)");
 				}
 				else // 减少数量 // 不执行
 					return;

@@ -15,6 +15,7 @@ public class MSG {
 	final static public String T_SAdropitem="SAdropitem";
 
 	final static public String T_Qinfo="Qinfo";
+	final static public String T_OQinfo="OQinfo";
 
 	final static public String T_Qsigninfo="Qsigninfo";
 	final static public String T_Asigninfo="Asigninfo";
@@ -30,4 +31,5 @@ public class MSG {
 	final static public String T_Qcraftingraw="Qcraftingraw";
 	final static public String T_Acraft="Acraft";
 	final static public String T_Qcancraft="Qcancraft";
+	
 }

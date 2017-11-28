@@ -19,13 +19,13 @@ public class ActHandler{
 	}
 	
 	
-	public static void F_Aping(String usernameIn,String loc_xIn,String loc_yIn) throws SQLException
+	public static void F_Aping(String usernameIn,String loc_xIn,String loc_yIn,String ipIn) throws SQLException
 	{
-		conn.createStatement().executeUpdate("update last_action set loc_x="+loc_xIn+",loc_y="+loc_yIn+",last_time='"+new Timestamp(new java.util.Date().getTime())+"' where username='"+usernameIn+"'");
+		conn.createStatement().executeUpdate("update last_action set ipaddr='"+ipIn+"',loc_x="+loc_xIn+",loc_y="+loc_yIn+",last_time='"+new Timestamp(new java.util.Date().getTime())+"' where username='"+usernameIn+"'");
 	}
-	public static void F_Aping(String usernameIn,double loc_xIn,double loc_yIn) throws SQLException
+	public static void F_Aping(String usernameIn,double loc_xIn,double loc_yIn,String ipIn) throws SQLException
 	{
-		F_Aping(usernameIn,String.valueOf(loc_xIn),String.valueOf(loc_yIn));
+		F_Aping(usernameIn,String.valueOf(loc_xIn),String.valueOf(loc_yIn),ipIn);
 	}
 	
 	public static String F_SQinv(String usernameIn) throws SQLException
