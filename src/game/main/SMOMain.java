@@ -1,10 +1,14 @@
 package game.main;
 
+import java.util.Random;
+
 import servlet.*;
 
 public class SMOMain {
 	
 	protected static SMOMain instance;
+	
+	public static Random rand;
 	
 	public SMOMain()
 	{
@@ -14,6 +18,11 @@ public class SMOMain {
 		try
 		{
 			log("SMO主机开始初始化");
+			
+			log("开始初始化随机数发生器");
+			rand=new Random();
+			log("随机数发生器初始化完成");
+			
 			
 			log("ACT处理机开始初始化");
 			new ActHandler();
@@ -38,6 +47,10 @@ public class SMOMain {
 			log("合成处理机开始初始化");
 			new CraftHandler();
 			log("合成处理机初始化完成");
+			
+			log("社交处理机开始初始化");
+			new SocHandler();
+			log("社交处理机初始化完成");
 			
 			instance=this;
 			log("SMO主机初始化完成");

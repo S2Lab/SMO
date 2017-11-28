@@ -263,6 +263,33 @@ public class DBAPI {
 		}
 	}
 	
+	// 这几个API用来操作loot表
+	// 读取一个loot表并且自动计算本次的随机数量 然后添加到一个玩家的物品栏
+	public static void giveLootToPlayer(String usernameIn,int id_lootIn)
+	{
+		try
+		{
+			Statement stmt=conn.createStatement();
+			stmt.executeQuery("select * from data_loot where id_loot="+id_lootIn);
+			ResultSet rs=stmt.getResultSet();
+			while(rs.next())
+			{
+				int id_item=rs.getInt("id_item");
+				int order=rs.getInt("order");
+				int amount_min=rs.getInt("amount_min");
+				int amount_max=rs.getInt("amount_max");
+				float proprobability=rs.getFloat("probability");
+				
+				System.out.println("give id_item"+id_item+", * "+amount_max);
+				DBAPI.Inventory_Edit(usernameIn, id_item, order, amount_max);
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	// 这几个API用来操作玩家和range的距离问题
 	// 是否可以交互
 	public static boolean can_executeWith(String usernameIn,int id_rangeIn)

@@ -22,6 +22,9 @@ public class MSG {
 
 	final static public String T_SQsurrsPlayer="SQsurrsPlayer";
 	final static public String T_SQsurrsMonster="SQsurrsMonster";
+	final static public String T_Qrangefunclist="Qrangefunclist";
+	final static public String T_Arangefunc="Arangefunc";
+	
 	final static public String T_Qentityfunclist="Qentityfunclist";
 	final static public String T_Aentityfunc="Aentityfunc";
 

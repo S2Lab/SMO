@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
-<%@page import="java.util.*,java.io.*,java.sql.*,net.sf.json.*,game.main.*" %>
+<%@page import="java.util.*,java.io.*,java.sql.*,net.sf.json.*,game.main.*,servlet.*" %>
 
 <%
 JSONObject json=new JSONObject();
 json.put("msg_type","data_range");
 
 Connection conn=DatabaseConnectionManager.getConnection();
-PreparedStatement stmt=conn.prepareStatement("select * from data_range");
+PreparedStatement stmt=conn.prepareStatement("select * from data_range where area='"+Utils.get(session,"area")+"'");
 stmt.execute();
 int amount=0;
 ResultSet rs=stmt.getResultSet();

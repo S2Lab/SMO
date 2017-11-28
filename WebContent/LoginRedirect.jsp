@@ -8,6 +8,7 @@ new game.main.SMOMain();
 
 String username=Utils.get(request,"username");
 String password=Utils.get(request,"password");
+String area=Utils.get(request,"area");
 
 boolean as_admin="on".equals(Utils.get(request,"as-admin"));
 
@@ -19,6 +20,7 @@ if(passed)
 {
 	session.setAttribute("username",username);
 	session.setAttribute("permission",(as_admin?"admin":"player"));
+	session.setAttribute("area", area);
 	if(as_admin)
 		response.sendRedirect("AdminPage.jsp");
 	else

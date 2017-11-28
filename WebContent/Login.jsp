@@ -25,6 +25,14 @@
 	{
 		width:200px;
 	}
+	a
+	{
+		color:blue;
+	}
+	a:visited
+	{
+		color:blue;
+	}
 
 	
 </style>
@@ -49,8 +57,19 @@
 		<td><input type="password" name="password"></td>
 	</tr>
 	<tr>
-		<td>管理员登陆</td>
+		<td>管理员<br>登陆</td>
 		<td><input type="checkbox" name="as-admin"></td>
+	</tr>
+	<tr>
+		<td>登陆区域</td>
+		<td><select style="width:100%" name="area">
+			<option value="ytld">烟台鲁东大学</option>
+			<option value="none">无</option>
+		</select></td>
+	</tr>
+	<tr>
+		<td> </td>
+		<td>不同区域间玩家数据是互通的<br>选择登陆区域只影响加载的范围</td>
 	</tr>
 	<tr>
 		<td> </td>
@@ -66,7 +85,14 @@
 	
 </div>
 
-<div style="position:fixed;bottom:0px;left:0px;font-size:75%"><a href="computer.html">跳转到战斗计算器</a><br>Sword Magic Online v 0.1.2 by S2Lab.Firok</div>
+<div style="position:fixed;bottom:0px;left:0px;font-size:75%">
+<a href="computer.html">跳转到战斗计算器</a><br>
+Sword Magic Online v 0.3.0 by S2Lab.Firok
+</div>
+
+<div style="position:fixed;top:0px;left:0px;background-color:lightblue">
+<a href="AboutMGR.jsp">想要更多权限?</a>
+</div>
 
 </body>
 </html>

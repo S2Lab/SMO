@@ -86,9 +86,15 @@
 			json.put("result",ActHandler.F_SQsurrsMonster(username));
 			json.put("status","success");
 			break;
-		case MSG.T_Qentityfunclist:
-			json.put("status","passed");
+		case MSG.T_Qrangefunclist:
+			json.put("result",FuncHandler.getFuncList(Utils.get(request,"id_range")));
+			json.put("status","success");
 			break;
+		case MSG.T_Arangefunc:
+			json.put("result",FuncHandler.executeFunc(username, Utils.get(request,"id_target"), Utils.get(request,"func"), null, null, null, null));
+			json.put("status","success");
+			break;
+			
 		case MSG.T_Aentityfunc:
 			json.put("status","passed");
 			break;

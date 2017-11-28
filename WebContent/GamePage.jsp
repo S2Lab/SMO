@@ -150,8 +150,10 @@ function check_data()
         // 处理多边形信息
         data_range_polygons=[];
         let step=0;
+        // console.log("amounts=="+data_range.amounts);
         while(step<data_range.amounts)
         {
+        	// console.log("第"+step+"次处理");
         	let points=[];
         	let str_pos_array=data_range.pos[step].split(';'); // 拿到这一次的点集合
         	let step2=0;
@@ -165,8 +167,16 @@ function check_data()
             	
         		step2++;
         	}
+        	let Pnew = new BMap.Polygon(points, {} );
         	
-        	let Pnew = new BMap.Polygon(points, {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5} );
+        	let id_range=data_range.id_range[step];
+        	Pnew.addEventListener("click", function(){
+        	    let str_get=$.get("AJAX_Handler.jsp?act=Qrangefunclist&id_range="+id_range,function(){
+        			let json_get=JSON.parse(str_get.responseText);
+        			$("#btn_modal_func").click();
+        			modal_show_func(json_get,id_range);
+        		});
+        	});  
         	data_range_polygons.push(Pnew);
         	
         	step++;
@@ -393,7 +403,61 @@ function btn_click_setting()
 {
 	;
 }
-
+// 按钮 - 功能列表
+function modal_show_func(jsonIn,id_rangeIn)
+{
+	let target=document.getElementById("modal_func_body");
+	
+	target.innerHTML="";
+	
+	document.getElementById("modal_func_head").innerText=data_range.name_range[getLocFromRangeId(id_rangeIn)];
+	
+	
+	if(jsonIn.result.amounts==1)
+	{
+		target.innerHTML+="<span onclick=\"postExecuteFunc("+id_rangeIn+",'"+jsonIn.result.func_type+"',"+jsonIn.result.id_target+")\">"+getFuncType(jsonIn.result.func_type)+"</span>"
+		+"<br>";
+	}
+	else
+	{
+		let step=0;
+		while(step<jsonIn.result.amounts)
+		{
+			target.innerHTML+="<span onclick=\"postExecuteFunc("+id_rangeIn+",\""+jsonIn.result.func_type[step]+"\","+jsonIn.result.id_target[step]+")\">"
+			+"<br>";
+		}
+	}
+	
+	target.innerHTML+="<span onclick=\"alert(data_range.des["+getLocFromRangeId(id_rangeIn)+"])\">查看详细</span>";
+}
+	// 获取功能对应的类型
+	function getFuncType(funcIn)
+	{
+		switch(funcIn)
+		{
+		case "resource":
+			return "采集资源";
+		}
+	}
+	// 根据id_range获取range位置
+	function getLocFromRangeId(idIn)
+	{
+		for(let step=0;step<data_range.amounts;step++)
+		{
+			if(data_range.id_range[step]==idIn)
+				return step;
+		}
+	}
+	// 执行功能
+	function postExecuteFunc(id_rangeIn,funcTypeIn,id_targetIn)
+	{
+		$("#btn_modal_func").click();
+		// console.log("AJAX_Handler.jsp?act=Arangefunc&id_range="+id_rangeIn+"&func="+funcTypeIn+"&id_target="+id_targetIn);
+		let str_get=$.get("AJAX_Handler.jsp?act=Arangefunc&id_range="+id_rangeIn+"&func="+funcTypeIn+"&id_target="+id_targetIn,function(){
+			let json_get=JSON.parse(str_get.responseText);
+			// console.log(json_get);
+		});
+	}
 
 
 
