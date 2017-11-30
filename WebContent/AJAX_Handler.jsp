@@ -30,8 +30,8 @@
 			json.put("status","passed");
 			break;
 			
-		case MSG.T_SQgold:
-			json.put("result",ActHandler.F_SQgold(username));
+		case MSG.T_SQcoin:
+			json.put("result",ActHandler.F_SQcoin(username));
 			json.put("status","success");
 			break;
 			

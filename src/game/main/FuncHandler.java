@@ -88,7 +88,7 @@ public class FuncHandler
 			{
 			case "resource": // 采集资源
 				
-				DBAPI.giveLootToPlayer(usernameIn, id_targetIn);
+				DBAPI.Loot_giveLootToPlayer(usernameIn, id_targetIn);
 				
 				break;
 			case "check_shop":

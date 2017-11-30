@@ -13,6 +13,7 @@ ResultSet rs=stmt.getResultSet();
 while(rs.next())
 {
 	json.accumulate("id_item", rs.getInt("id_item"));
+	json.accumulate("rarity",rs.getShort("rarity"));
 	json.accumulate("name_item", rs.getString("name_item"));
 	json.accumulate("order_type", rs.getShort("order_type"));
 	json.accumulate("is_usable", rs.getBoolean("is_usable"));

@@ -53,16 +53,6 @@ public class ActHandler{
 		return "";
 	}
 	
-	public static String F_SQgold(String usernameIn) throws SQLException
-	{
-		JSONObject json=new JSONObject();
-		
-		Statement stmt=conn.createStatement();
-		stmt.executeQuery("select gold from player where ");
-		
-		return json.toString();
-	}
-	
 	public static String F_SQequi()
 	{
 		return "";
@@ -127,6 +117,21 @@ public class ActHandler{
 		json.put("lv",rs.getInt("lv"));
 		json.put("class_sub",rs.getString("class_sub"));
 		json.put("lv_sub",rs.getInt("lv_sub"));
+		
+		
+		return json.toString();
+	}
+	public static String F_SQcoin(String usernameIn) throws SQLException
+	{
+		JSONObject json=new JSONObject();
+		Statement stmt=conn.createStatement();
+		stmt.executeQuery("select gold,silver,copper,irisia from player where username='"+usernameIn+"'");
+		ResultSet rs=stmt.getResultSet();
+		rs.next();
+		json.put("gold", rs.getInt("gold"));
+		json.put("silver", rs.getInt("silver"));
+		json.put("copper", rs.getInt("copper"));
+		json.put("irisia", rs.getInt("irisia"));
 		
 		return json.toString();
 	}

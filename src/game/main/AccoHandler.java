@@ -80,13 +80,13 @@ public class AccoHandler {
 			switch(classIn)
 			{
 			case "sword":
-				stmt.executeUpdate("insert into player value('"+usernameIn+"',5,2,0,1,3,3,30,1,30,10,1,10,'"+classIn+"',1,'',0,100)");
+				stmt.executeUpdate("insert into player value('"+usernameIn+"',5,2,0,1,3,3,30,1,30,10,1,10,'"+classIn+"',1,'',0,100,0,0,0)");
 				break;
 			case "magic":
-				stmt.executeUpdate("insert into player value('"+usernameIn+"',2,1,0,0,8,8,25,1,25,10,1,10,'"+classIn+"',1,'',0,100)");
+				stmt.executeUpdate("insert into player value('"+usernameIn+"',2,1,0,0,8,8,25,1,25,10,1,10,'"+classIn+"',1,'',0,100,0,0,0)");
 				break;
 			case "acc":
-				stmt.executeUpdate("insert into player value('"+usernameIn+"',2,1,4,2,5,5,25,1,25,30,1,30,'"+classIn+"',1,'',0,100)");
+				stmt.executeUpdate("insert into player value('"+usernameIn+"',2,1,4,2,5,5,25,1,25,30,1,30,'"+classIn+"',1,'',0,100,0,0,0)");
 				break;
 			default:
 				throw new Exception("职业不对");

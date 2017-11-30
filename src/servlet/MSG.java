@@ -6,7 +6,7 @@ public class MSG {
 	final static public String T_SQinv="SQinv";
 	final static public String T_OQinv="OQinv";
 	
-	final static public String T_SQgold="SQgold";
+	final static public String T_SQcoin="SQcoin";
 
 	final static public String T_SQequi="SQequi";
 	final static public String T_OQequi="OQequi";

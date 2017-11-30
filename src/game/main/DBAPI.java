@@ -211,6 +211,57 @@ public class DBAPI {
 		}
 	}
 	
+	// 这几个API用来操作玩家的货币数量
+	public static enum COIN
+	{
+		gold,silver,copper,irisia
+	}
+	public static int getCoin(String usernameIn,COIN typeIn)
+	{
+		try
+		{
+			Statement stmt=conn.createStatement();
+			stmt.executeQuery("select * from player where username='"+usernameIn+"'");
+			ResultSet rs=stmt.getResultSet();
+			rs.next();
+			return rs.getInt(typeIn.name());
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	public static void setCoin(String usernameIn,COIN typeIn,int valueIn)
+	{
+		try
+		{
+			Statement stmt=conn.createStatement();
+			stmt.executeUpdate("update player set "+typeIn.name()+"="+valueIn+" where username='"+usernameIn+"'");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public static void editCoin(String usernameIn,COIN typeIn,int valueToChange)
+	{
+		int old_value=getCoin(usernameIn,typeIn);
+		int new_value=old_value+valueToChange;
+		if(new_value<0)
+			new_value=0;
+		try
+		{
+			Statement stmt=conn.createStatement();
+			stmt.executeUpdate("update player set "+typeIn.name()+"="+new_value+" where username='"+usernameIn+"'");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	
 	// 这几个API用来操作玩家状态
 	// 冻结玩家
 	public static void Player_freeze(String usernameIn,long timeIn)
@@ -265,7 +316,7 @@ public class DBAPI {
 	
 	// 这几个API用来操作loot表
 	// 读取一个loot表并且自动计算本次的随机数量 然后添加到一个玩家的物品栏
-	public static void giveLootToPlayer(String usernameIn,int id_lootIn)
+	public static void Loot_giveLootToPlayer(String usernameIn,int id_lootIn)
 	{
 		try
 		{

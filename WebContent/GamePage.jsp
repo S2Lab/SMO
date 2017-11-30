@@ -84,6 +84,185 @@ background-color:#b0843a;
 <body>  
 <div id="container"></div> 
 <script type="text/javascript" src="http://api.map.baidu.com/getscript?v=2.0&ak=TTGBXxjhg74WayrWPgAk6pLmqzRHIrX9&services=&t=20171031174121"></script>
+<script> /**
+ * @fileoverview 百度地图API事件包装器
+ * 此代码可使用closure compiler的advanced模式进行压缩
+ * @author Baidu Map Api Group 
+ * @version 1.2
+ */
+/** 
+ * @namespace BMap的所有library类均放在BMapLib命名空间下
+ */
+var BMapLib = window.BMapLib || {};
+/**
+ * 事件封装器的静态类，不可实例化
+ * @class EventWrapper
+ */
+BMapLib.EventWrapper = window.BMapLib.EventWrapper || {};
+(function(){
+
+//var EventWrapper = window.BMapLib.EventWrapper;
+/**
+ * 添加DOM事件监听函数
+ * @param {HTMLElement} element DOM元素
+ * @param {String} event 事件名称
+ * @param {Function} handler 事件处理函数
+ * @returns {MapsEventListener} 事件监听对象
+ */
+BMapLib.EventWrapper.addDomListener = function(instance, eventName, handler) {
+    if (instance.addEventListener) {
+        instance.addEventListener(eventName, handler, false);
+    }
+    else if (instance.attachEvent) {
+        instance.attachEvent('on' + eventName, handler);
+    }
+    else {
+        instance['on' + eventName] = handler;
+    }
+    return new MapsEventListener(instance, eventName, handler, MapsEventListener.DOM_EVENT);
+};
+/**
+ * 添加DOM事件监听函数，函数仅执行一次
+ * @param {HTMLElement} element DOM元素
+ * @param {String} event 事件名称
+ * @param {Function} handler 事件处理函数
+ * @returns {MapsEventListener} 事件监听对象
+ */
+BMapLib.EventWrapper.addDomListenerOnce = function(instance, eventName, handler) {
+    var eventListener = EventWrapper['addDomListener'](instance, eventName, function(){
+        // 移除
+        EventWrapper['removeListener'](eventListener);
+        return handler.apply(this, arguments);
+    });
+    return eventListener;
+};
+/**
+ * 添加地图事件监听函数
+ * @param {Object} instance 实例
+ * @param {String} event 事件名称
+ * @param {Function} handler 事件处理函数
+ * @returns {MapsEventListener} 事件监听对象
+ */
+BMapLib.EventWrapper.addListener = function(instance, eventName, handler) {
+    instance.addEventListener(eventName, handler);
+    return new MapsEventListener(instance, eventName, handler, MapsEventListener.MAP_EVENT);
+};
+/**
+ * 添加地图事件监听函数，函数仅执行一次
+ * @param {Object} instance 需要监听的实例
+ * @param {String} event 事件名称
+ * @param {Function} handler 事件处理函数
+ * @returns {MapsEventListener} 事件监听对象
+ */
+BMapLib.EventWrapper.addListenerOnce = function(instance, eventName, handler){
+    var eventListener = EventWrapper['addListener'](instance, eventName, function(){
+        // 移除
+        EventWrapper['removeListener'](eventListener);
+        return handler.apply(this, arguments);
+    });
+    return eventListener;
+};
+/**
+ * 移除特定实例的所有事件的所有监听函数
+ * @param {Object} instance 需要移除所有事件监听的实例
+ * @returns {None}
+ */
+BMapLib.EventWrapper.clearInstanceListeners = function(instance) {
+    var listeners = instance._e_ || {};
+    for (var i in listeners) {
+        EventWrapper['removeListener'](listeners[i]);
+    }
+    instance._e_ = {};
+};
+/**
+ * 移除特定实例特定事件的所有监听函数
+ * @param {Object} instance 需要移除特定事件监听的实例
+ * @param {String} event 需要移除的事件名
+ * @returns {None}
+ */
+BMapLib.EventWrapper.clearListeners = function(instance, eventName) {
+    var listeners = instance._e_ || {};
+    for (var i in listeners) {
+        if (listeners[i]._eventName == eventName) {
+            EventWrapper['removeListener'](listeners[i]);
+        }
+    }
+};
+/**
+ * 移除特定的事件监听函数
+ * @param {MapsEventListener} listener 需要移除的事件监听对象
+ * @returns {None}
+ */
+BMapLib.EventWrapper.removeListener = function(listener) {
+    var instance = listener._instance;
+    var eventName = listener._eventName;
+    var handler = listener._handler;
+    var listeners = instance._e_ || {};
+    for (var i in listeners) {
+        if (listeners[i]._guid == listener._guid) {
+            if (listener._eventType == MapsEventListener.DOM_EVENT) {
+                // DOM事件
+                if (instance.removeEventListener) {
+                    instance.removeEventListener(eventName, handler, false);
+                }
+                else if (instance.detachEvent) {
+                    instance.detachEvent('on' + eventName, handler);
+                }
+                else {
+                    instance['on' + eventName] = null;
+                }
+            }
+            else if (listener._eventType == MapsEventListener.MAP_EVENT) {
+                // 地图事件
+                instance.removeEventListener(eventName, handler);
+            }
+            delete listeners[i];
+        }
+    }
+};
+/**
+ * 触发特定事件
+ * @param {Object} instance 触发事件的实例对象
+ * @param {String} event 触发事件的名称
+ * @param {Object} args 自定义事件参数，可选
+ * @returns {None}
+ */
+BMapLib.EventWrapper.trigger = function(instance, eventName) {
+    var listeners = instance._e_ || {};
+    for (var i in listeners) {
+        if (listeners[i]._eventName == eventName) {
+            var args = Array.prototype.slice.call(arguments, 2);
+            listeners[i]._handler.apply(instance, args);
+        }
+    }
+};
+
+/**
+ * 事件监听类
+ * @constructor
+ * @ignore
+ * @private
+ * @param {Object} 对象实例
+ * @param {string} 事件名称
+ * @param {Function} 事件监听函数
+ * @param {EventTypes} 事件类型
+ */
+function MapsEventListener(instance, eventName, handler, eventType){
+    this._instance = instance;
+    this._eventName = eventName;
+    this._handler = handler;
+    this._eventType = eventType;
+    this._guid = MapsEventListener._guid ++;
+    this._instance._e_ = this._instance._e_ || {};
+    this._instance._e_[this._guid] = this;
+}
+MapsEventListener._guid = 1;
+
+MapsEventListener.DOM_EVENT = 1;
+MapsEventListener.MAP_EVENT = 2;
+
+})();
+</script>
 <script type="text/javascript"> 
 var map = new BMap.Map("container");
 // 创建地图实例  
@@ -145,12 +324,11 @@ function check_data()
         data_monster=JSON.parse(str_monster.responseText);
         data_range=JSON.parse(str_range.responseText);
         
-        
-        
         // 处理多边形信息
         data_range_polygons=[];
         let step=0;
-        // console.log("amounts=="+data_range.amounts);
+        // console.log("amounts=="+data_range.amounts); 
+        
         while(step<data_range.amounts)
         {
         	// console.log("第"+step+"次处理");
@@ -170,20 +348,25 @@ function check_data()
         	let Pnew = new BMap.Polygon(points, {} );
         	
         	let id_range=data_range.id_range[step];
+
+			
         	Pnew.addEventListener("click", function(){
+        		// alert("something");
+        		
         	    let str_get=$.get("AJAX_Handler.jsp?act=Qrangefunclist&id_range="+id_range,function(){
         			let json_get=JSON.parse(str_get.responseText);
         			$("#btn_modal_func").click();
         			modal_show_func(json_get,id_range);
         		});
         	});  
+
         	data_range_polygons.push(Pnew);
         	
         	step++;
         }
         
-        
         _refreshSurrs();
+
     }
 
 }
@@ -247,16 +430,34 @@ function btn_click_inv()
 		let json_get=JSON.parse(str_get.responseText);
 		modal_show_inv(json_get);
 	});
+	let str_get_coin=$.get("AJAX_Handler.jsp?act=SQcoin",function(){
+		let json_get=JSON.parse(str_get_coin.responseText);
+		modal_show_gold(json_get);
+	});
+}
+function modal_show_gold(jsonIn)
+{
+	out_coin_gold=document.getElementById("out_coin_gold");
+	out_coin_silver=document.getElementById("out_coin_silver");
+	out_coin_copper=document.getElementById("out_coin_copper");
+	out_coin_irisia=document.getElementById("out_coin_irisia");
+	
+	out_coin_gold.innerText="金币:"+jsonIn.result.gold;
+	out_coin_silver.innerText="银币:"+jsonIn.result.silver;
+	out_coin_copper.innerText="铜币:"+jsonIn.result.copper;
+	out_coin_irisia.innerText="艾瑞希亚币:"+jsonIn.result.irisia;
+	
 }
 function modal_show_inv(jsonIn)
 {
     let target=document.getElementById("modal_inv_body");
     target.innerHTML="";
+    // console.log(jsonIn);
     if(jsonIn.result.amounts==1)
    	{
     	target.innerHTML+=
         	( (parseInt(jsonIn.result.slot) >0) ? " <span style=\"color:green\">穿戴中</span> ":"")+
-		getItemNameById(jsonIn.result.id_item)+" × "+
+		"<span style=\"color:"+getColorByRarity(getItemRarityById(jsonIn.result.id_item))+"\">"+getItemNameById(jsonIn.result.id_item)+"</span> × "+
         jsonIn.result.amount+" | "+
         (getItemUsableById(jsonIn.result.id_item)? UI_InvItemUse(jsonIn.result.id_item,jsonIn.result.order) :"")+
         (getItemDropableById(jsonIn.result.id_item)? UI_InvItemDrop(jsonIn.result.id_item,jsonIn.result.order) :"")+
@@ -270,7 +471,7 @@ function modal_show_inv(jsonIn)
 	    {
 	        target.innerHTML+=
 	        	( (parseInt(jsonIn.result.slot[step]) >0) ? " <span style=\"color:green\">穿戴中</span> ":"")+
-			getItemNameById(jsonIn.result.id_item[step])+" × "+
+	        	"<span style=\"color:"+getColorByRarity(getItemRarityById(jsonIn.result.id_item[step]))+"\">"+getItemNameById(jsonIn.result.id_item[step])+"</span> × "+
 	        jsonIn.result.amount[step]+" | "+
 	        (getItemUsableById(jsonIn.result.id_item[step])? UI_InvItemUse(jsonIn.result.id_item[step],jsonIn.result.order[step]) :"")+
 	        (getItemDropableById(jsonIn.result.id_item[step])? UI_InvItemDrop(jsonIn.result.id_item[step],jsonIn.result.order[step]) :"")+
@@ -308,6 +509,33 @@ function modal_show_inv(jsonIn)
 	{
 		return data_item.is_dropable[getItemLocById(idIn)];
 	}
+	function getItemRarityById(idIn)
+	{
+		return data_item.rarity[getItemLocById(idIn)];
+	}
+		// 根据rarity显示颜色
+		function getColorByRarity(rarityIn)
+		{
+			switch(rarityIn)
+			{
+			case 0: // 普通
+				return "black";
+			case 1: // 稀有
+				return "blue";
+			case 2: // 罕见
+				return "darkgreen";
+			case 3: // 珍贵
+				return "purple";
+			case 4: // 传说
+				return "darkred";
+			case 5: // 史诗
+				return "darkorange";
+			case 10: // 唯一
+				return "#DAA520";
+			default:
+				return "black";
+			}
+		}
 		// 物品项目 按钮的相关函数
 		function UI_InvItemUse(idIn,orderIn)
 		{
@@ -377,20 +605,57 @@ function modal_show_make(jsonIn)
 	// 查看详细
 	function btn_click_make_detail(idIn)
 	{
-		let str_to_show="";
+		let if_ok_can=false;
+		let if_ok_raw=false;
+		let str_can="";
+		let str_raw="";
 		let str_get_can=$.get("AJAX_Handler.jsp?act=Qcancraft&id_crafting="+idIn,function(){
 			let json_get=JSON.parse(str_get_can.responseText);
 			str_get_can=json_get.result;
 			
-			str_to_show+=(str_get_can?"能合成":"不能合成")+"\n";
-		});; // 获取原材料
+			str_can+=(str_get_can?"能合成":"不能合成");
+			if_ok_can=true;
+			_show_make_detail(if_ok_can,if_ok_raw,str_can,str_raw);
+		});; // 获取能否合成
 		let str_get_raws=$.get("AJAX_Handler.jsp?act=Qcraftingraw&id_crafting="+idIn,function(){
 			let json_get=JSON.parse(str_get_raws.responseText);
-			str_to_show+=json_get;
 			
-			alert(str_to_show);
+			str_raw+=
+				"主职业需求: "+json_get.result.class_need+"\n"+
+				"主职业等级需求: "+json_get.result.lv_need+"\n"+
+				"副职业需求: "+json_get.result.class_sub_need+"\n"+
+				"副职业等级需求: "+json_get.result.lv_sub_need+"\n"+
+				"消耗经验: "+json_get.result.gold_need+"\n\n"+
+				"需要材料: ";
+			if(json_get.result.amounts==1)
+			{
+				str_raw+=getItemNameById( json_get.result.raw_id_item ) + " × "+
+				json_get.result.raw_amount;
+			}
+			else
+			{
+				let step=0;
+				for(step=0;step<json_get.result.amounts;step++)
+				{
+					str_raw+=getItemNameById( json_get.result.raw_id_item[step] ) + " × "+
+					json_get.result.raw_amount[step];
+				}
+			}
+			
+			if_ok_raw=true;
+			_show_make_detail(if_ok_can,if_ok_raw,str_can,str_raw);
 		});; // 获取原材料
 	}
+		// 显示详细
+		function _show_make_detail(if_ok_can,if_ok_raw,str_can,str_raw)
+		{
+			if(if_ok_can && if_ok_raw)
+			{
+				alert(str_raw+"\n\n\n"+str_can);
+			}
+			else
+				return;
+		}
 	// 合成
 	function btn_click_make_do(idIn)
 	{
@@ -669,6 +934,10 @@ function func_modal_show_shop(idRangeIn)
         <!-- 模态框头部 -->
         <div class="modal-header">
           <h4 class="modal-title">背包</h4>
+          <span style="color:gold" id="out_coin_gold">金币:100</span>|
+          <span style="color:silver" id="out_coin_silver">银币:100</span>|
+          <span style="color:#b45836" id="out_coin_copper">铜币:100</span>|
+          <span style="color:#336699" id="out_coin_irisia">艾瑞希亚币:100</span>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
    
