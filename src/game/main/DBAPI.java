@@ -212,11 +212,8 @@ public class DBAPI {
 	}
 	
 	// 这几个API用来操作玩家的货币数量
-	public static enum COIN
-	{
-		gold,silver,copper,irisia
-	}
-	public static int getCoin(String usernameIn,COIN typeIn)
+	
+	public static int Player_getCoin(String usernameIn,COIN typeIn)
 	{
 		try
 		{
@@ -232,7 +229,23 @@ public class DBAPI {
 			return 0;
 		}
 	}
-	public static void setCoin(String usernameIn,COIN typeIn,int valueIn)
+	public static Coins Player_getCoins(String usernameIn)
+	{
+		try
+		{
+			Statement stmt=conn.createStatement();
+			stmt.executeQuery("select gold,silver,copper,irisia from player where username='"+usernameIn+"'");
+			ResultSet rs=stmt.getResultSet();
+			rs.next();
+			return new Coins(rs.getInt("gold"),rs.getInt("silver"),rs.getInt("copper"),rs.getInt("irisia"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return new Coins(0,0,0,0);
+		}
+	}
+	public static void Player_setCoin(String usernameIn,COIN typeIn,int valueIn)
 	{
 		try
 		{
@@ -244,9 +257,9 @@ public class DBAPI {
 			e.printStackTrace();
 		}
 	}
-	public static void editCoin(String usernameIn,COIN typeIn,int valueToChange)
+	public static void Player_editCoin(String usernameIn,COIN typeIn,int valueToChange)
 	{
-		int old_value=getCoin(usernameIn,typeIn);
+		int old_value=Player_getCoin(usernameIn,typeIn);
 		int new_value=old_value+valueToChange;
 		if(new_value<0)
 			new_value=0;
@@ -349,9 +362,29 @@ public class DBAPI {
 	}
 
 }
+enum COIN
+{
+	gold,silver,copper,irisia
+}
+class Coins
+{
+	public int gold;
+	public int silver;
+	public int copper;
+	public int irisia;
+	public Coins(int goldIn,int silverIn,int copperIn,int irisiaIn)
+	{
+		gold=goldIn;
+		silver=silverIn;
+		copper=copperIn;
+		irisia=irisiaIn;
+	}
+}
 class ItemAttrSet
 {
 	// 基础属性
+	public String name_item;
+	
 	public boolean is_usable;
 	public boolean is_soldable;
 	public boolean is_dropable;
@@ -375,6 +408,8 @@ class ItemAttrSet
 	public int mp_limit;
 	public ItemAttrSet(ResultSet rsIn) throws SQLException
 	{
+		name_item=rsIn.getString("name_item");
+		
 		is_usable=rsIn.getBoolean("is_usable");
 		is_soldable=rsIn.getBoolean("is_soldable");
 		is_dropable=rsIn.getBoolean("is_dropable");

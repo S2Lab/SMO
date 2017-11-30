@@ -7,6 +7,8 @@
 
 	// String username=servlet.Utils.get(request,"username");
 	String username=Utils.get(request.getSession(),"username");
+	if(username.length()==0)
+		return;
 	String act=servlet.Utils.get(request,"act");
 		
 	JSONObject json=new JSONObject();
@@ -76,6 +78,18 @@
 					Utils.get(request,"time_begin"),
 					Utils.get(request,"time_end"));
 			json.put("status","success");
+			break;
+			
+		case MSG.T_Qshoplist:
+			json.put("result",ShopHandler.getShopList(Utils.get(request,"id_shop")));
+			json.put("status","success");
+			break;
+		case MSG.T_Ashopbuy:
+			ShopHandler.buyFrom(username, Utils.get(request,"id_shop"), Utils.get(request,"id_trade"));
+			json.put("status","success");
+			break;
+		case MSG.T_Ashopsell:
+			json.put("status","passed");
 			break;
 			
 		case MSG.T_SQsurrsPlayer:

@@ -18,6 +18,7 @@ out.print("if_passed=="+passed);
 
 if(passed)
 {
+	session.setAttribute("passed","true");
 	session.setAttribute("username",username);
 	session.setAttribute("permission",(as_admin?"admin":"player"));
 	session.setAttribute("area", area);

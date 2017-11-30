@@ -153,6 +153,10 @@ public class ItemUseHandler {
 		else
 			return new ItemAttrSet();
 	}
+	public static String getItemName(int id_itemIn)
+	{
+		return getItemAttrSet(id_itemIn).name_item;
+	}
 
 }
 

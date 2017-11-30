@@ -52,6 +52,10 @@ public class SMOMain {
 			new SocHandler();
 			log("社交处理机初始化完成");
 			
+			log("商店处理机开始初始化");
+			new ShopHandler();
+			log("商店处理机初始化完成");
+			
 			instance=this;
 			log("SMO主机初始化完成");
 		}

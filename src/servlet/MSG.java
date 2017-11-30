@@ -19,6 +19,10 @@ public class MSG {
 
 	final static public String T_Qsigninfo="Qsigninfo";
 	final static public String T_Asigninfo="Asigninfo";
+	
+	final static public String T_Qshoplist="Qshoplist";
+	final static public String T_Ashopbuy="Ashopbuy";
+	final static public String T_Ashopsell="Ashopsell";
 
 	final static public String T_SQsurrsPlayer="SQsurrsPlayer";
 	final static public String T_SQsurrsMonster="SQsurrsMonster";
