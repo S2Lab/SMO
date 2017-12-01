@@ -81,11 +81,15 @@ a{text-decoration:none}
 a:hover{text-decoration:none}
 a:visited{text-decoration:none}
 
+span:hover{background-color:lightgreen}
+
 </style> 
 </head>
 
 
-<body>  
+<body>
+
+<script>console.log("Sword Magic Online v 0.5.2 by S2Lab.Firok");</script>
 <div id="container"></div> 
 <script type="text/javascript" src="http://api.map.baidu.com/getscript?v=2.0&ak=TTGBXxjhg74WayrWPgAk6pLmqzRHIrX9&services=&t=20171031174121"></script>
 <script> /**
@@ -271,7 +275,7 @@ MapsEventListener.MAP_EVENT = 2;
 var map = new BMap.Map("container");
 // 创建地图实例  
 map.setMapStyle({style:'midnight'});
-map.disableDragging(true);
+// map.disableDragging(true);
 map.disableContinuousZoom(true);
 map.disableDoubleClickZoom(true);
 map.disablePinchToZoom(true);
@@ -370,6 +374,9 @@ function check_data()
         }
         
         _refreshSurrs();
+        
+        
+        console.log("读取到"+data_item.amounts+"条物品数据,"+data_range.amounts+"条区域数据,"+data_monster.amounts+"条怪物数据");
 
     }
 
@@ -712,6 +719,10 @@ function modal_show_func(jsonIn,id_rangeIn)
 		{
 		case "resource":
 			return "采集资源";
+		case "shop":
+			return "查看商店";
+		default:
+			return "未定义";
 		}
 	}
 	// 根据id_range获取range位置
@@ -726,14 +737,96 @@ function modal_show_func(jsonIn,id_rangeIn)
 	// 执行功能
 	function postExecuteFunc(id_rangeIn,funcTypeIn,id_targetIn)
 	{
-		$("#btn_modal_func").click();
-		// console.log("AJAX_Handler.jsp?act=Arangefunc&id_range="+id_rangeIn+"&func="+funcTypeIn+"&id_target="+id_targetIn);
-		let str_get=$.get("AJAX_Handler.jsp?act=Arangefunc&id_range="+id_rangeIn+"&func="+funcTypeIn+"&id_target="+id_targetIn,function(){
-			let json_get=JSON.parse(str_get.responseText);
-			// console.log(json_get);
-		});
+		// $("#btn_modal_func").click();
+		
+		
+		document.getElementById("modal_func_body").innerText="";
+		let str_get;
+		
+		switch(funcTypeIn)
+		{
+		case "resource":
+			$("#btn_modal_func").click(); // 隐藏模态框
+			str_get=$.get("AJAX_Handler.jsp?act=Arangefunc&id_range="+id_rangeIn+"&func="+funcTypeIn+"&id_target="+id_targetIn,function(){
+				let json_get=JSON.parse(str_get.responseText);
+			});
+			break;
+		
+		case "shop":
+			str_get=$.get("AJAX_Handler.jsp?act=Qshoplist&id_range="+id_rangeIn+"&func="+funcTypeIn+"&id_shop="+id_targetIn,function(){
+				let json_get=JSON.parse(str_get.responseText);
+				
+				let target=document.getElementById("modal_func_body");
+				document.getElementById("modal_func_head").innerText="商店列表";
+				
+				
+				if(json_get.result.amounts==1)
+				{
+					_show_item_sold(target,
+							json_get.result.id_shop,
+							json_get.result.id_trade,
+							json_get.result.name,
+							json_get.result.id_item,
+							json_get.result.amount_sold,
+							
+							json_get.result.gold_need,
+							json_get.result.silver_need,
+							json_get.result.copper_need,
+							json_get.result.irisia_need,
+							
+							
+							json_get.result.des
+							);
+				}
+				else
+				{
+					for(let step=0;step<json_get.result.amounts;step++)
+					{
+						_show_item_sold(target,
+								json_get.result.id_shop,
+								json_get.result.id_trade[step],
+								json_get.result.name[step],
+								json_get.result.id_item_sold[step],
+								json_get.result.amount_sold[step],
+								
+								json_get.result.gold_need[step],
+								json_get.result.silver_need[step],
+								json_get.result.copper_need[step],
+								json_get.result.irisia_need[step],
+								
+								
+								json_get.result.des[step]
+								);
+					}
+				}
+				
+			});
+			break;
+			
+		default:
+			console.log("WRONG FUNC TYPE");
+		}
 	}
-
+		// 显示一个销售条目
+		function _show_item_sold(targetIn,id_shopIn,id_tradeIn,nameIn,id_item_soldIn,amount_soldIn,gold_needIn,silver_needIn,copper_needIn,irisia_needIn,desIn)
+		{
+			targetIn.innerHTML+=
+			""+nameIn+" | "+getItemNameById(id_item_soldIn)+" × "+amount_soldIn+" | "
+			+"<span style=\"color:gold\">"+gold_needIn
+			+"</span>,<span style=\"color:silver\">"
+			+silver_needIn+"</span>,<span style=\"color:#b45836\">"
+			+copper_needIn+"</span>,<span style=\"color:blue\">"
+			+irisia_needIn+"</span>"
+			+"<span style=\"border:1px solid gray;\" onclick=\"sendTrade("+id_shopIn+","+id_tradeIn+")\">购买</span>"
+			+"<br>";
+		}
+			// 发送交易请求
+			function sendTrade(id_shopIn,id_tradeIn)
+			{
+				$.get("AJAX_Handler.jsp?act=Ashopbuy&id_shop="+id_shopIn+"&id_trade="+id_tradeIn,function(){
+					;
+				});
+			}
 
 
 console.log("嘛 可能是加载完了 谁知道呢..");
@@ -1044,7 +1137,7 @@ function func_modal_show_shop(idRangeIn)
    
   <!-- 模态框 动作栏 -->
   <div class="modal fade" id="modal_func">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
    
         <!-- 模态框头部 -->
