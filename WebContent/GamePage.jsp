@@ -77,6 +77,10 @@ background-color:#b0843a;
 	top:100px;
 }
 
+a{text-decoration:none}
+a:hover{text-decoration:none}
+a:visited{text-decoration:none}
+
 </style> 
 </head>
 
@@ -412,8 +416,10 @@ function modal_show_info(jsonIn)
     target.innerHTML+="魔防"+jsonIn.result.def_m+"<br>";
     target.innerHTML+="速度"+jsonIn.result.speed+"<br>";
     target.innerHTML+="命中"+jsonIn.result.acc+"<br>";
+    target.innerHTML+="生命"+jsonIn.result.hp+"<br>";
     target.innerHTML+="生命上限"+jsonIn.result.hp_limit+"<br>";
     target.innerHTML+="生命恢复"+jsonIn.result.hp_re+"<br>";
+    target.innerHTML+="魔法"+jsonIn.result.mp+"<br>";
     target.innerHTML+="魔法上限"+jsonIn.result.mp_limit+"<br>";
     target.innerHTML+="魔法恢复"+jsonIn.result.mp_re+"<br>";
     target.innerHTML+="主职业"+jsonIn.result.class+"<br>";
@@ -554,6 +560,10 @@ function modal_show_inv(jsonIn)
 		    let str_get=$.get("AJAX_Handler.jsp?act=SAuseitem&id_item="+idIn+"&order="+orderIn+"&amount=1",function(){
 				let json_get=JSON.parse(str_get.responseText);
 				modal_show_inv(json_get);
+			});
+		    let str_get_coin=$.get("AJAX_Handler.jsp?act=SQcoin",function(){
+				let json_get=JSON.parse(str_get_coin.responseText);
+				modal_show_gold(json_get);
 			});
 		}
 		function UI_click_item_drop(idIn,orderIn)
@@ -1018,7 +1028,9 @@ function func_modal_show_shop(idRangeIn)
    
         <!-- 模态框主体 -->
         <div class="modal-body" id="modal_setting_body">
-        设置信息
+        
+        <div><a href="ShopPage.jsp">商店</a></div>
+        
         </div>
    
         <!-- 模态框底部 -->
@@ -1029,8 +1041,7 @@ function func_modal_show_shop(idRangeIn)
       </div>
     </div>
   </div>
-  
-  
+   
   <!-- 模态框 动作栏 -->
   <div class="modal fade" id="modal_func">
     <div class="modal-dialog modal-sm">

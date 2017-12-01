@@ -52,7 +52,8 @@ boolean passed=Utils.get(session,"passed").equals("true");
 <div id="out_player_coins">
 <%if(passed)
 {%>
-随便买点啥吧?
+随便买点啥吧?<br>
+<a href="GamePage.jsp">返回游戏</a>
 
 <% 
 }

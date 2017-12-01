@@ -81,6 +81,89 @@ public class ItemUseHandler {
 					DBAPI.Inventory_Edit(usernameIn,11, -1,5); // 给玩家5个金锭
 					break;
 					
+					
+				case 200: // 村民口粮
+					DBAPI.Player_HP_Edit(usernameIn, 10);
+					break;
+				case 201: // 下级体力药剂
+					DBAPI.Player_HP_Edit(usernameIn, 20);
+					break;
+				case 202: // 普通体力药剂
+					DBAPI.Player_HP_Edit(usernameIn, 50);
+					break;
+				case 203: // 上级体力药剂
+					DBAPI.Player_HP_Edit(usernameIn, 100);
+					break;
+				case 204: // 大师体力药剂
+					DBAPI.Player_HP_Edit(usernameIn, 300);
+					break;
+				case 205: // 下级伤害药剂
+					DBAPI.Player_HP_Edit(usernameIn, -10);
+					break;
+				case 206: // 普通伤害药剂
+					DBAPI.Player_HP_Edit(usernameIn, -20);
+					break;
+				case 207: // 上级伤害药剂
+					DBAPI.Player_HP_Edit(usernameIn, -50);
+					break;
+				case 208: // 大师伤害药剂
+					DBAPI.Player_HP_Edit(usernameIn, -300);
+					break;
+				case 209: // 体力完全恢复药剂
+					stmt.executeUpdate("update player set hp=hp_limit where username='"+usernameIn+"'");
+					break;
+					
+				case 220: // 村民酒
+					DBAPI.Player_MP_Edit(usernameIn, 10);
+					break;
+				case 221: // 下级法力药剂
+					DBAPI.Player_MP_Edit(usernameIn, 20);
+					break;
+				case 222: // 普通法力药剂
+					DBAPI.Player_MP_Edit(usernameIn, 50);
+					break;
+				case 223: // 上级法力药剂
+					DBAPI.Player_MP_Edit(usernameIn, 100);
+					break;
+				case 224: // 大师法力药剂
+					DBAPI.Player_MP_Edit(usernameIn, 300);
+					break;
+				case 229: // 法力完全恢复药剂
+					stmt.executeUpdate("update player set mp=mp_limit where username='"+usernameIn+"'");
+					break;
+					
+				case 280: // 小钱袋
+					DBAPI.Player_editCoin(usernameIn, COIN.copper, 50);
+					DBAPI.Player_editCoin(usernameIn, COIN.silver, 50);
+					DBAPI.Player_editCoin(usernameIn, COIN.gold, 50);
+					DBAPI.Player_editCoin(usernameIn, COIN.irisia, 50);
+					break;
+				case 281: // 钱袋
+					DBAPI.Player_editCoin(usernameIn, COIN.copper, 100);
+					DBAPI.Player_editCoin(usernameIn, COIN.silver, 100);
+					DBAPI.Player_editCoin(usernameIn, COIN.gold, 100);
+					DBAPI.Player_editCoin(usernameIn, COIN.irisia, 100);
+					break;
+				case 282: // 大钱袋
+					DBAPI.Player_editCoin(usernameIn, COIN.copper, 200);
+					DBAPI.Player_editCoin(usernameIn, COIN.silver, 200);
+					DBAPI.Player_editCoin(usernameIn, COIN.gold, 200);
+					DBAPI.Player_editCoin(usernameIn, COIN.irisia, 200);
+					break;
+					
+				case 284: // 下级药水袋
+					DBAPI.Inventory_Edit(usernameIn, 201, -1, 5);
+					DBAPI.Inventory_Edit(usernameIn, 221, -1, 5);
+					break;
+				case 285: // 普通药水袋
+					DBAPI.Inventory_Edit(usernameIn, 202, -1, 5);
+					DBAPI.Inventory_Edit(usernameIn, 222, -1, 5);
+					break;
+				case 286: // 上级药水袋
+					DBAPI.Inventory_Edit(usernameIn, 203, -1, 5);
+					DBAPI.Inventory_Edit(usernameIn, 223, -1, 5);
+					break;
+					
 				case 283: // 新手套装礼包
 					DBAPI.Inventory_Edit(usernameIn, 600, -1, 1);
 					DBAPI.Inventory_Edit(usernameIn, 601, -1, 1);
@@ -88,6 +171,11 @@ public class ItemUseHandler {
 					DBAPI.Inventory_Edit(usernameIn, 603, -1, 1);
 					DBAPI.Inventory_Edit(usernameIn, 200, -1, 5);
 					break;
+					
+				case 288: // 诡异的盒子
+					DBAPI.Inventory_Edit(usernameIn, 205, -1, 3);
+					DBAPI.Inventory_Edit(usernameIn, 206, -1, 3);
+					DBAPI.Inventory_Edit(usernameIn, 207, -1, 3);
 				default:
 					break;
 				}

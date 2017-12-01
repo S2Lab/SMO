@@ -87,7 +87,7 @@
 
 <div style="position:fixed;bottom:0px;left:0px;font-size:75%">
 <a href="computer.html">跳转到战斗计算器</a><br>
-Sword Magic Online v 0.5.0 by S2Lab.Firok
+Sword Magic Online v 0.5.1 by S2Lab.Firok
 </div>
 
 <div style="position:fixed;top:0px;left:0px;background-color:lightblue">

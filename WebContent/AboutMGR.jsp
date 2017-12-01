@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<title>关于SMO</title>
+<title>关于SMO权限</title>
 <style>
 	body
 	{

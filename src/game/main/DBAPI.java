@@ -153,17 +153,20 @@ public class DBAPI {
 		try
 		{
 			Statement stmt=conn.createStatement();
-			stmt.executeUpdate("select hp,hp_limit from player where username='"+usernameIn+"'");
+			stmt.executeQuery("select hp,hp_limit from player where username='"+usernameIn+"'");
 			int hp_old,hp_limit,hp_new;
 			ResultSet rs=stmt.getResultSet();
+			rs.next();
 			hp_old=rs.getInt("hp");
 			hp_limit=rs.getInt("hp_limit");
 			hp_new=hp_old+amountIn;
-			if(hp_new>=0 && hp_new<=hp_limit)
-			{
-				stmt.executeUpdate("update player set hp="+hp_new+" where username='"+usernameIn+"'");
-			}
+			
+			if(hp_new<0) hp_new=0;
+			else if(hp_new>hp_limit) hp_new=hp_limit;
+
+			stmt.executeUpdate("update player set hp="+hp_new+" where username='"+usernameIn+"'");
 		}
+		
 		catch(Exception e)
 		{
 			e.printStackTrace();
