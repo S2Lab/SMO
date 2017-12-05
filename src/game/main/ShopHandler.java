@@ -12,9 +12,7 @@ public class ShopHandler{
 	
 	public ShopHandler() throws Exception
 	{
-		if(instance!=null)
-			return;
-		conn=DatabaseConnectionManager.getConnection();
+		conn=DatabaseConnectionManager.getConnection("商店处理机",true);
 		instance=this;
 	}
 	

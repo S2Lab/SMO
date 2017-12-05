@@ -9,9 +9,7 @@ public class DBAPI {
 	
 	public DBAPI() throws Exception
 	{
-		if(instance!=null)
-			return;
-		conn=DatabaseConnectionManager.getConnection();
+		conn=DatabaseConnectionManager.getConnection("数据库接口提供器",true);
 		instance=this;
 	}
 	

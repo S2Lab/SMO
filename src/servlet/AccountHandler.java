@@ -23,7 +23,7 @@ public class AccountHandler extends HttpServlet {
 
 	public void init(ServletConfig config) throws ServletException {
 		try {
-			conn=game.main.DatabaseConnectionManager.getConnection();
+			conn=game.main.DatabaseConnectionManager.getConnection("账户管理机",true);
 			
 			
 		} catch (Exception e) {

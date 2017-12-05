@@ -12,9 +12,7 @@ public class ActHandler{
 	
 	public ActHandler() throws Exception
 	{
-		if(instance!=null)
-			return;
-		conn=DatabaseConnectionManager.getConnection();
+		conn=DatabaseConnectionManager.getConnection("动作处理机",true);
 		instance=this;
 	}
 	

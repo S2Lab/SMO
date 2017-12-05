@@ -5,7 +5,7 @@
 JSONObject json=new JSONObject();
 json.put("msg_type","data_item");
 
-Connection conn=DatabaseConnectionManager.getConnection();
+Connection conn=DatabaseConnectionManager.getConnection("物品信息发送器",false);
 PreparedStatement stmt=conn.prepareStatement("select * from data_item");
 stmt.execute();
 int amount=0;

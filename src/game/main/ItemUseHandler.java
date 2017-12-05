@@ -14,9 +14,7 @@ public class ItemUseHandler {
 	
 	public ItemUseHandler() throws Exception
 	{
-		if(instance!=null)
-			return;
-		conn=DatabaseConnectionManager.getConnection();
+		conn=DatabaseConnectionManager.getConnection("物品使用处理机",true);
 		instance=this;
 		
 		attrs=new HashMap<Integer,ItemAttrSet>();

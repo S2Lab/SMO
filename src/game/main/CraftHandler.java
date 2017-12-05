@@ -10,9 +10,7 @@ public class CraftHandler {
 	
 	public CraftHandler() throws Exception
 	{
-		if(instance!=null)
-			return;
-		conn=DatabaseConnectionManager.getConnection();
+		conn=DatabaseConnectionManager.getConnection("合成处理机",true);
 		instance=this;
 	}
 	

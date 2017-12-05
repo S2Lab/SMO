@@ -11,10 +11,7 @@ public class AccoHandler {
 	
 	public AccoHandler() throws Exception
 	{
-		if(instance!=null)
-			return;
-		
-		conn=DatabaseConnectionManager.getConnection();
+		conn=DatabaseConnectionManager.getConnection("账户处理机",true);
 		instance=this;
 	}
 	
@@ -92,7 +89,9 @@ public class AccoHandler {
 				throw new Exception("职业不对");
 			}
 			
-			DBAPI.Inventory_Edit(usernameIn, 283, -1, 1);
+			DBAPI.Inventory_Edit(usernameIn, 283, -1, 1); // 村民的包裹 1
+			DBAPI.Inventory_Edit(usernameIn, 700, -1, 1); // 伊始之石 1
+			DBAPI.Inventory_Edit(usernameIn, 280, -1, 2); // 小钱袋 2
 			
 			return true;
 		}

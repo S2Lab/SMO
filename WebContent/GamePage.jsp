@@ -14,9 +14,9 @@
 <script src="https://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
 
 <style type="text/css">  
-html{height:100%}  
-body{height:100%;margin:0px;padding:0px}  
-#container{height:100%}  
+html{height:100%}
+body{height:100%;margin:0px;padding:0px;font-family:merriweather,Georgia,Times New Roman,Microsoft Yahei Light}
+#container{height:100%}
 
 
 
@@ -705,8 +705,10 @@ function modal_show_func(jsonIn,id_rangeIn)
 		let step=0;
 		while(step<jsonIn.result.amounts)
 		{
-			target.innerHTML+="<span onclick=\"postExecuteFunc("+id_rangeIn+",\""+jsonIn.result.func_type[step]+"\","+jsonIn.result.id_target[step]+")\">"
+			target.innerHTML+="<span onclick=\"postExecuteFunc("+id_rangeIn+",'"+jsonIn.result.func_type[step]+"',"+jsonIn.result.id_target[step]+")\">"
+			+getFuncType(jsonIn.result.func_type[step])+"</span>"
 			+"<br>";
+			step++;
 		}
 	}
 	
@@ -721,6 +723,8 @@ function modal_show_func(jsonIn,id_rangeIn)
 			return "采集资源";
 		case "shop":
 			return "查看商店";
+		case "relax":
+			return "休息";
 		default:
 			return "未定义";
 		}
@@ -801,6 +805,10 @@ function modal_show_func(jsonIn,id_rangeIn)
 				}
 				
 			});
+			break;
+			
+		case "relax":
+			$("#btn_modal_func").click();
 			break;
 			
 		default:
@@ -989,7 +997,7 @@ function func_modal_show_shop(idRangeIn)
 <div id="btn-line">
 	<span class="btns" data-toggle="modal" data-target="#modal_info" onclick="btn_click_info()">信息</span>
 	<span class="btns" data-toggle="modal" data-target="#modal_inv" onclick="btn_click_inv()">背包</span>
-	<span class="btns" data-toggle="modal" data-target="#modal_soc" onclick="btn_click_soc()">社交</span>
+	<span class="btns" data-toggle="modal" data-target="#modal_soc" onclick="btn_click_soc()" style="display:none">社交</span>
 	<span class="btns" data-toggle="modal" data-target="#modal_make" onclick="btn_click_make()">合成</span>
 	<span class="btns" data-toggle="modal" data-target="#modal_setting" onclick="btn_click_setting()">设置</span>
 	<span class="btns" data-toggle="modal" data-target="#modal_func" onclick="" id="btn_modal_func" style="display:none">动作</span>

@@ -11,9 +11,7 @@ public class SocHandler {
 	
 	public SocHandler() throws Exception
 	{
-		if(instance!=null)
-			return;
-		conn=DatabaseConnectionManager.getConnection();
+		conn=DatabaseConnectionManager.getConnection("社交处理机",true);
 		instance=this;
 	}
 	

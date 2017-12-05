@@ -6,7 +6,7 @@ pageEncoding="UTF-8"%>
 JSONObject json=new JSONObject();
 json.put("msg_type","data_range");
 
-Connection conn=DatabaseConnectionManager.getConnection();
+Connection conn=DatabaseConnectionManager.getConnection("区域信息发送器",false);
 PreparedStatement stmt=conn.prepareStatement("select * from data_range where area='"+Utils.get(session,"area")+"'");
 stmt.execute();
 int amount=0;

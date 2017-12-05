@@ -12,10 +12,7 @@ public class FuncHandler
 	
 	public FuncHandler() throws Exception
 	{
-		if(instance!=null)
-			return;
-		
-		conn=DatabaseConnectionManager.getConnection();
+		conn=DatabaseConnectionManager.getConnection("行为处理机",true);
 		
 		instance=this;
 	}
@@ -64,22 +61,21 @@ public class FuncHandler
 		return json;
 	}
 
-	public static JSONObject executeFunc(String usernameIn,String id_targetIn,String funcIn,String param1,String param2,String param3,String param4)
+	public static JSONObject executeFunc(String usernameIn,String id_rangeIn,String id_targetIn,String funcIn,String param1,String param2,String param3,String param4)
 	{
-		try
-		{
-			return executeFunc(usernameIn,Integer.valueOf(id_targetIn),funcIn,param1,param2,param3,param4);
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			return new JSONObject();
-		}
-	}
-	public static JSONObject executeFunc(String usernameIn,int id_targetIn,String funcIn,String param1,String param2,String param3,String param4)
-	{
-		System.out.println("execute func username="+usernameIn+",id_target="+id_targetIn+",func="+funcIn);
 		JSONObject json=new JSONObject();
+		
+		
+		// 时间消耗大于0 玩家处于冻结状态
+		long time_cost=getFuncTimeCost(id_rangeIn,funcIn,id_targetIn+"");
+		if(time_cost>0 && DBAPI.Player_freeze_remain(usernameIn)>0)
+			return json;
+		
+		// 先把玩家冻起来就对了
+		DBAPI.Player_freeze(usernameIn, time_cost);
+		
+		System.out.println("execute func username="+usernameIn+",id_target="+id_targetIn+",func="+funcIn);
+		
 		try
 		{
 			Statement stmt=conn.createStatement();
@@ -88,9 +84,14 @@ public class FuncHandler
 			{
 			case "resource": // 采集资源
 				
-				DBAPI.Loot_giveLootToPlayer(usernameIn, id_targetIn);
+				DBAPI.Loot_giveLootToPlayer(usernameIn, Integer.valueOf(id_targetIn));
 				
 				break;
+				
+			case "relax":
+				;
+				break;
+			
 			case "check_shop":
 				break;
 			case "buy_from":
@@ -133,6 +134,25 @@ public class FuncHandler
 		{
 			e.printStackTrace();
 			return false;
+		}
+	}
+	
+	public static long getFuncTimeCost(String id_rangeIn,String funcTypeIn,String id_targetIn)
+	{
+		try
+		{
+			Statement stmt=conn.createStatement();
+			stmt.executeQuery("select * from data_func where id_range="+id_rangeIn+" and func_type='"+funcTypeIn+" and id_target="+id_targetIn);
+			ResultSet rs=stmt.getResultSet();
+			if(rs.next())
+				return rs.getLong("time_cost");
+			else
+				return 0;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return 0;
 		}
 	}
 

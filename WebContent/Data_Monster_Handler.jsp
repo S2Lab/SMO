@@ -6,7 +6,7 @@ pageEncoding="UTF-8"%>
 JSONObject json=new JSONObject();
 json.put("msg_type","data_monster");
 
-Connection conn=DatabaseConnectionManager.getConnection();
+Connection conn=DatabaseConnectionManager.getConnection("怪物信息发送器",false);
 PreparedStatement stmt=conn.prepareStatement("select * from data_monster");
 stmt.execute();
 int amount=0;

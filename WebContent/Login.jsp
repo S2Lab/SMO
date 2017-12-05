@@ -19,7 +19,8 @@
 		padding:0;
 		max-width:100%;
 		max-height:100%;
-		background-color:#bababa
+		background-color:#bababa;
+		font-family:merriweather,Georgia,Times New Roman,Microsoft Yahei Light
 	}
 	input
 	{
@@ -69,7 +70,7 @@
 	</tr>
 	<tr>
 		<td> </td>
-		<td>不同区域间玩家数据是互通的<br>选择登陆区域只影响加载的范围</td>
+		<td>不同区域间玩家数据是互通的<br>选择登陆区域只影响地图数据加载的范围</td>
 	</tr>
 	<tr>
 		<td> </td>
@@ -85,17 +86,18 @@
 	
 </div>
 
-<div style="position:fixed;bottom:0px;left:0px;font-size:75%">
-<a href="computer.html">跳转到战斗计算器</a><br>
-Sword Magic Online v 0.5.2 by S2Lab.Firok
+<div style="position:fixed;bottom:0px;left:0px;font-size:75%;">
+<a href="DataPage.jsp" style="">跳转到数据清单</a><br>
+<a href="computer.html" style="">跳转到战斗计算器</a><br>
+Sword Magic Online v <%=game.main.SMOMain.version %> by S2Lab.Firok
 </div>
 
-<div style="position:fixed;top:0px;left:0px;background-color:lightblue">
+<div style="position:fixed;top:0px;left:0px;background-color:lightblue;">
 <a href="AboutMGR.jsp">想要更多权限?</a>
 </div>
 
 <div style="position:fixed;top:0px;right:0px;background-color:lightblue">
-<a href="ShopPage.jsp">商店页面</a>
+<a href="ShopPage.jsp">商城</a>
 </div>
 
 </body>
