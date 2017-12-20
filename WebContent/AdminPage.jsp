@@ -54,9 +54,6 @@ if(!act.equals("")) // 有要执行的动作
 	{
 		switch(act)
 		{
-		case "edit":
-			stmt_act.execute("update "+table+" set "+col+"="+value+" where username");
-			break;
 		
 		case "give":
 			System.out.println("username='"+username+"'");
@@ -90,6 +87,22 @@ if(!act.equals("")) // 有要执行的动作
 			stmt_act.executeUpdate("delete from inventory where username='"+username+"'");
 			stmt_act.executeUpdate("delete from player where username='"+username+"'");
 			stmt_act.executeUpdate("delete from accounts where username='"+username+"'");
+			response.sendRedirect("AdminPage.jsp?page=acco");
+			break;
+			
+		case "set_admin":
+			stmt_act.executeUpdate("update accounts set permission='admin' where username='"+username+"'");
+			
+			response.sendRedirect("AdminPage.jsp?page=acco");
+			break;
+			
+		case "set_player":
+			if(!username.equals("root")) // root用户不能被取消管理员权限
+			{
+				stmt_act.executeUpdate("update accounts set permission='player' where username='"+username+"'");
+			}
+			
+			response.sendRedirect("AdminPage.jsp?page=acco");
 			break;
 			
 		case "edit_sign":
@@ -150,7 +163,7 @@ table{width:100%;text-align:center}
 		<a href="AdminPage.jsp?page=index" class="item_table">控制台首页</a>
 		<a href="AdminPage.jsp?page=acco" class="item_table">账户信息</a>
 		<a href="AdminPage.jsp?page=inv" class="item_table">背包信息</a>
-		<a href="AdminPage.jsp?page=sign" class="item_table">公告信息</a>
+		<a href="AdminPage.jsp?page=sign" class="item_table" style="display:none">公告信息</a>
 		
 		<a href="DataPage.jsp" class="item_table" target="_blank">数据清单</a>
 		
@@ -296,6 +309,45 @@ table{width:100%;text-align:center}
 		break;
 		
 	case "acco":
+		%>
+		<table>
+		
+			<tr>
+				<td>用户名</td>
+				<td>权限</td>
+				<td><!-- 改权限用的按钮 --></td>
+				<td><!-- 删账号的按钮 --></td>
+				<td>创建时间</td>
+			</tr>
+			<%
+			Statement stmt_acco=conn.createStatement();
+			if(username.equals(""))
+			{
+				stmt_acco.executeQuery("select * from accounts");
+			}
+			else
+			{
+				stmt_acco.executeQuery("select * from accounts where username='"+username+"'");
+			}
+			ResultSet rs_acco=stmt_acco.getResultSet();
+			while(rs_acco.next()){
+				boolean is_admin=rs_acco.getString("permission").equals("admin");
+			%>
+				<tr>
+					<td><%=rs_acco.getString("username") %></td>
+					<td><%=is_admin?"管理员":"玩家" %></td>
+					<td><a href="AdminPage.jsp?username=<%=rs_acco.getString("username")%>&act=set_<%=is_admin?"player":"admin"%>"><button>设为<%=is_admin?"玩家":"管理员" %></button></a></td>
+					<td><a href="AdminPage.jsp?username=<%=rs_acco.getString("username")%>&act=delete_acco"><button>删除账号</button></a></td>
+					<td><%=rs_acco.getString("create_time") %></td>
+				</tr>
+			<%}
+			%>
+		
+		
+		</table>		
+		<%
+		
+		
 	default:
 		break;
 	}
@@ -304,7 +356,7 @@ table{width:100%;text-align:center}
 	
 	</div>
 	
-	<span class="btns" data-toggle="modal" data-target="#modal_input" onclick="btn_click_info()" style="display:none">修改信息</span>
+	<span class="btns" data-toggle="modal" data-target="#modal_input" onclick="btn_click_info()" style="display:inline">修改信息</span>
 	
 	<form action="Admin.jsp">
 		<input type="hidden" name="username" value="">
@@ -324,6 +376,8 @@ table{width:100%;text-align:center}
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			
+			<form action="AdminPage.jsp">
+			
 			<!-- 模态框主体 -->
 			<div class="modal-body" id="modal_input_body">
 				<input type="text" id="input_value" value="" style="wdith:100%">
@@ -331,9 +385,13 @@ table{width:100%;text-align:center}
 			
 			<!-- 模态框底部 -->
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" data-dismiss="modal">提交</button>
+				<input type="hidden" value="" name="act">
+				<input type="hidden" value="" name="username">
+				<input type="submit" class="btn btn-primary" value="提交更改">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
 			</div>
+			
+			</form>
 			
 			</div>
 		</div>

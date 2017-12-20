@@ -7,20 +7,70 @@
 
 	// String username=servlet.Utils.get(request,"username");
 	String username=Utils.get(request.getSession(),"username");
+	/*
 	if(username.length()==0)
 		return;
+	*/
 	String act=servlet.Utils.get(request,"act");
 		
 	JSONObject json=new JSONObject();
 	json.put("status","common");
-	
+		
 	
 	try
 	{
 		switch(act)
 		{
 		case MSG.T_Aping: // 唤醒
+		case MSG.T_Qloc:
+		case MSG.T_SQinv:
+		case MSG.T_OQinv:
+		case MSG.T_SQcoin:
+		case MSG.T_SQequi:
+		case MSG.T_OQequi:
+		case MSG.T_SAuseitem:
+		case MSG.T_SAdropitem:
+		case MSG.T_Qinfo:
+		case MSG.T_OQinfo:
+		case MSG.T_Asigninfo:
+		case MSG.T_Ashopbuy:
+		case MSG.T_Ashopsell:
+		case MSG.T_SQsurrsPlayer:
+		case MSG.T_SQsurrsMonster:
+		case MSG.T_Qrangefunclist:
+		case MSG.T_Arangefunc:
+
+		case MSG.T_Aentityfunc:
+		
+		case MSG.T_Acraft:
+		case MSG.T_Qfriendlist:
+			
+			String usernameInSession=Utils.get(session,"username");
+			if(usernameInSession.equals(""))
+				throw new Exception("未登陆");
+			
+			
+		case MSG.T_Qsigninfo:
+		case MSG.T_Qshoplist:
+		case MSG.T_Qcraftinglist:
+		case MSG.T_Qcraftingraw:
+		case MSG.T_Qcancraft:
+		case "checkUsernameExistence":
+			break;
+			
+		default:
+			break;
+		}
+		
+		switch(act)
+		{
+		case MSG.T_Aping: // 唤醒
 			ActHandler.F_Aping(username,Utils.get(request,"loc_x"),Utils.get(request,"loc_y"),request.getRemoteAddr());
+			json.put("status","success");
+			break;
+			
+		case MSG.T_Qloc: // 请求位置信息
+			ActHandler.F_Qloc(username);
 			json.put("status","success");
 			break;
 			
@@ -105,7 +155,8 @@
 			json.put("status","success");
 			break;
 		case MSG.T_Arangefunc:
-			json.put("result",FuncHandler.executeFunc(username, Utils.get(request,"id_target"), Utils.get(request,"func"), null, null, null, null));
+			
+			json.put("result",FuncHandler.executeFunc(username,Utils.get(request,"id_range"),Utils.get(request,"id_target"),Utils.get(request,"func"),"","","",""));
 			json.put("status","success");
 			break;
 			
@@ -126,8 +177,12 @@
 			json.put("status","success");
 			break;
 		case MSG.T_Qcancraft:
-			// System.out.println(username+"查询"+Utils.get(request,"id_crafting"));
 			json.put("result",CraftHandler.canCraft(username, Utils.get(request,"id_crafting")));
+			json.put("status","success");
+			break;
+			
+		case MSG.T_Qfriendlist:
+			json.put("result",SocHandler.getFriendList(username));
 			json.put("status","success");
 			break;
 			

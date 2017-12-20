@@ -14,75 +14,149 @@
 </head>
 
 <style>
-body{height:100%;margin:0px;padding:0px;font-family:merriweather,Georgia,Times New Roman,Microsoft Yahei Light}
+body{height:100%;margin:0px;padding:0px;
+font-family:merriweather,Georgia,Times New Roman,Microsoft Yahei;
+text-align:center}
+table{width:100%}
+td{border:1px solid gray}
+
+.bgc_gray{background-color:#EBEBEB}
+.c_gray{color:gray}
+.c_red{color:red}
+.c_maroon{color:maroon}
+.c_blue{color:blue}
+.c_darkblue{color:darkblue}
+.c_green{color:green}
+.c_gold{color:gold}
+.c_purple{color:purple}
+.c_orange{color:orange}
+
+.hovercolor-lightblue:hover
+{
+background-color:lightblue;
+}
 </style>
 
 <script>
-
 var data_item;var hasgot_data_item=false; // 所有的物品信息
 var data_monster;var hasgot_data_monster=false; // 所有的怪物信息
 var data_range;var hasgot_data_range=false; // 所有的range信息
-$(document).ready(function(){
-	const out=$("body")[0];
-	function log(logIn)
-	{
-		let node=document.createElement("div");
-		node.innerHTML=logIn+"<br>";
-		out.appendChild(node);
-	}
-	
-	var data_range_polygons; // 处理后的多边形s
 
-	var str_item=$.get("Data_Item_Handler.jsp",function(){
-	    hasgot_data_item=true;
+function log_item(logIn)
+{
+    out_item.innerHTML+=logIn;
+}
+function log_monster(logIn)
+{
+    out_monster.innerHTML+=logIn;
+}
+function log_range(logIn)
+{
+    out_range.innerHTML+=logIn;
+}
+
+function load_all()
+{
+    var str_item=$.get("Data_Item_Handler.jsp",function(){
+        hasgot_data_item=true;
+        data_item=JSON.parse(str_item.responseText);
 	    check_data();
 	});
 	var str_monster=$.get("Data_Monster_Handler.jsp",function(){
-	    hasgot_data_monster=true;
-	    check_data();
+        hasgot_data_monster=true;
+        data_monster=JSON.parse(str_monster.responseText);
+        check_data();
+        
 	});
 	var str_range=$.get("Data_Range_Handler.jsp",function(){
 		hasgot_data_range=true;
-	    check_data();
+        data_range=JSON.parse(str_range.responseText);
+        check_data();
 	});
-
-	function check_data()
-	{
-	    if(hasgot_data_item && hasgot_data_monster && hasgot_data_range)
-	    {
-	        // 获取完所有信息
-	        console.log("基础信息加载完成");
-	        
-	        data_item=JSON.parse(str_item.responseText);
-	        data_monster=JSON.parse(str_monster.responseText);
-	        data_range=JSON.parse(str_range.responseText);
-	        
-	        log("读取到"+data_item.amounts+"条物品数据,"+data_range.amounts+"条区域数据,"+data_monster.amounts+"条怪物数据");
-	        
-	        log("<br><br>物品表<br>");
-	        log("物品名| 物品id | 描述 | 属性");
-	        for(let step=0;step<data_item.amounts;step++)
-	        {
-	        	log("<span style='color:purple'>"+data_item.name_item[step]+"</span>"+"|"+data_item.id_item[step]+"|"+data_item.des[step]+
-	        	(data_item.is_usable[step]?"|<span style='color:green'>可使用</span>"+(data_item.is_wearable[step]?"|<span style='color:blue'>可穿戴</span>":"|<span style='color:red'>不可穿戴</span>") :"|<span style='color:red'>不可使用</span>")+
-	        	(data_item.is_soldable[step]?"|<span style='color:darkorange'>可交易</span>":"")+
-	        	(data_item.is_dropable[step]?"|<span style='color:brown'>可丢弃</span>":"")
-	        	);
-	        }
-	        for(let step=0;step<data_range.amounts;step++)
-	        {
-	        	;
-	        }
-	        for(let step=0;step<data_monster.amounts;step++)
-	        {
-	        	;
-	        }
-	    }
-	}
+}
+$(document).ready(function(){
+    const out_item=$("#out_item")[0];
+    const out_range=$("#out_range")[0];
+    const out_monster=$("#out_monster")[0];
+    load_all();
 });
+
+function check_data()
+{
+    if(hasgot_data_item && hasgot_data_monster && hasgot_data_range)
+    {
+        // 获取完所有信息
+        console.log("基础信息加载完成");
+        
+        
+        
+
+        let step;
+        log_item("<tr><td>物品名称</td><td>物品id</td><td>描述</td><td>使用性</td><td>穿戴性</td><td>交易性</td><td>丢弃性</td><td>强化性</td><td>附魔性</td></tr>")
+        for(step=0;step<data_item.amounts;step++)
+        {
+            log_item(
+            "<tr class='hovercolor-lightblue "+(step%2==0?"bgc_gray":"")+"'><td style='color:"+getColorByRarity(data_item.rarity[step])+"'>"+data_item.name_item[step]+
+            "</td><td>"+data_item.id_item[step]+
+            "</td><td>"+data_item.des[step]+
+            "</td><td class='"+(data_item.is_usable[step]?"c_blue":"c_gray")+"'>"+data_item.is_usable[step]+
+            "</td><td class='"+(data_item.is_wearable[step]?"c_darkblue":"c_gray")+"'>"+data_item.is_wearable[step]+
+            "</td><td class='"+(data_item.is_soldable[step]?"c_gold":"c_gray")+"'>"+data_item.is_soldable[step]+
+            "</td><td class='"+(data_item.is_dropable[step]?"c_maroon":"c_gray")+"'>"+data_item.is_dropable[step]+
+            "</td><td class='"+(data_item.is_strenthenable[step]?"c_green":"c_gray")+"'>"+data_item.is_strenthenable[step]+
+            "</td><td class='"+(data_item.is_enchantable[step]?"c_purple":"c_gray")+"'>"+data_item.is_enchantable[step]+"</td></tr>"
+            );
+        }
+        for(step=0;step<data_item.amounts;step++)
+        {
+            ;
+        }
+        for(step=0;step<data_monster.amounts;step++)
+        {
+            ;
+        }
+    }
+}
+	//根据rarity显示颜色
+	function getColorByRarity(rarityIn)
+	{
+		switch(rarityIn)
+		{
+		case 0: // 普通
+			return "black";
+		case 1: // 稀有
+			return "blue";
+		case 2: // 罕见
+			return "darkgreen";
+		case 3: // 珍贵
+			return "purple";
+		case 4: // 传说
+			return "darkred";
+		case 5: // 史诗
+			return "darkorange";
+		case 10: // 唯一
+			return "#DAA520";
+		default:
+			return "black";
+		}
+	}
 </script>
 
+
 <body>
+
+<h1>物品数据</h1>
+<table>
+<tbody id="out_item"></tbody>
+</table>
+
+怪物数据<br>
+<div id="out_monster">
+</div>
+
+范围数据<br>
+<div id="out_range">
+</div>
 
 
 </body>

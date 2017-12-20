@@ -26,6 +26,28 @@ public class ActHandler{
 		F_Aping(usernameIn,String.valueOf(loc_xIn),String.valueOf(loc_yIn),ipIn);
 	}
 	
+	public static JSONObject F_Qloc(String usernameIn)
+	{
+		JSONObject json=new JSONObject();
+		try
+		{
+			Statement stmt=conn.createStatement();
+			stmt.executeQuery("select * from last_action where username='"+usernameIn+"'");
+			ResultSet rs=stmt.getResultSet();
+			
+			rs.next();
+			json.put("loc_x", rs.getDouble("loc_x"));
+			json.put("loc_y", rs.getDouble("loc_y"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			json.put("loc_x", 0);
+			json.put("loc_y", 0);
+		}
+		return json;
+	}
+	
 	public static String F_SQinv(String usernameIn) throws SQLException
 	{
 		JSONObject json=new JSONObject();

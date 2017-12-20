@@ -116,6 +116,7 @@ function checkUsername()
 	else
 	{
 	    let str_get=$.get("AJAX_Handler.jsp?act=checkUsernameExistence&username="+$("#username").val(),function(){
+	    	console.log(str_get);
 	    	let json_get=JSON.parse(str_get.responseText);
 	    	if(json_get.result==false)
 	    		$("#username").css("background-color","green");

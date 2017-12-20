@@ -89,7 +89,7 @@
 <div style="position:fixed;bottom:0px;left:0px;font-size:75%;">
 <a href="DataPage.jsp" style="">跳转到数据清单</a><br>
 <a href="computer.html" style="">跳转到战斗计算器</a><br>
-Sword Magic Online v <%=game.main.SMOMain.version %> by S2Lab.Firok
+Sword Magic Online v <%=game.main.SMOMain.version_display %> by S2Lab.Firok
 </div>
 
 <div style="position:fixed;top:0px;left:0px;background-color:lightblue;">

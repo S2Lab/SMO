@@ -2,6 +2,7 @@ package servlet;
 
 public class MSG {
 	final static public String T_Aping="Aping";
+	final static public String T_Qloc="Qloc";
 
 	final static public String T_SQinv="SQinv";
 	final static public String T_OQinv="OQinv";
@@ -31,6 +32,8 @@ public class MSG {
 	
 	final static public String T_Qentityfunclist="Qentityfunclist";
 	final static public String T_Aentityfunc="Aentityfunc";
+	
+	final static public String T_Qfriendlist="Qfriendlist";
 
 	
 	

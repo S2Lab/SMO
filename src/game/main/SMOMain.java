@@ -11,7 +11,10 @@ public class SMOMain {
 	
 	public static Random rand;
 	
-	public static String version="0.5.5";
+	// 内部版本号
+	public static String version="0.5.6";
+	// 考核版本号
+	public static String version_display="assessment 01.00";
 	
 	public static Thread dbKeeper;
 	

@@ -16,19 +16,20 @@ public class SocHandler {
 	}
 	
 	// 获取好友列表
-	public String getFriendList(String usernameIn)
+	public static JSONObject getFriendList(String usernameIn)
 	{
 		JSONObject json=new JSONObject();
 		int amount=0;
 		try
 		{
 			Statement stmt=conn.createStatement();
-			stmt.executeQuery("select * from friend_list");
+			stmt.executeQuery("select * from friend_list where username='"+usernameIn+"'");
 			ResultSet rs=stmt.getResultSet();
 			while(rs.next())
 			{
 				json.accumulate("friendname", rs.getString("friendname"));
-				json.accumulate("begintime", rs.getDate("begintime"));
+				json.accumulate("begintime", rs.getDate("begintime").toString());
+				json.accumulate("status", rs.getString("status"));
 				amount++;
 			}
 			stmt.close();
@@ -40,55 +41,53 @@ public class SocHandler {
 		
 		json.put("amounts", amount);
 		
-		return json.toString();
+		return json;
 	}
 	
-	// 建立好友关系
-	public static void becomeFriend(String usernameIn,String friendNameIn)
+	// 发送交友请求
+	public static void setRequesting(String usernameIn,String targetIn)
 	{
 		try
 		{
 			Statement stmt=conn.createStatement();
-			stmt.executeUpdate("insert into friend_list value('"+usernameIn+"','"+friendNameIn+"','"+new java.sql.Date(new java.util.Date().getTime()).toLocaleString()+"'");
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-	// 取消好友关系
-	public static void cancelFriend(String usernameIn,String friendNameIn)
-	{
-		try
-		{
-			Statement stmt=conn.createStatement();
-			stmt.executeUpdate("delete from friend_list where username='"+usernameIn+"' and friendname='"+friendNameIn+"'");
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	// 是否是好友关系
-	public static boolean isFriend(String usernameIn,String friendNameIn)
-	{
-		try
-		{
-			Statement stmt=conn.createStatement();
-			stmt.executeQuery("select * from friend_list where username='"+usernameIn+"' and friendname='"+friendNameIn+"'");
+			stmt.executeQuery("select * from friend_list where username='"+usernameIn+"' and friendname='"+targetIn+"'");
 			ResultSet rs=stmt.getResultSet();
 			if(rs.next())
-				return true;
-			else
-				return false;
+			{
+try
+{
+	;				// test1;
+}
+catch(Exception e)
+{
+	;
+}
+			}
+			else // 没有任何数据 // 这个时候插入一条数据
+			{
+				stmt.executeUpdate("insert into friend_list value('"+usernameIn+"','"+targetIn+"','"+new java.sql.Date(System.currentTimeMillis()).toLocaleString()+"','requesting')");
+			}
+			
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
-			return false;
 		}
 	}
+	// 接受好友请求
+	public static void setConfirmed(String usernameIn,String targetIn)
+	{
+	}
+	// 拒绝好友请求
+	public static void setDenyed(String usernameIn,String targetIn)
+	{
+	}
+	// 删除好友
+	public static void setRemove(String usernameIn,String targetIn)
+	{
+		;
+	}
+	
 	
 	// 获取公会信息
 	public static JSONObject getUnionInfo(int unionIdIn)

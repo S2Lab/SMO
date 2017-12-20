@@ -89,7 +89,7 @@ span:hover{background-color:lightgreen}
 
 <body>
 
-<script>console.log("Sword Magic Online v 0.5.2 by S2Lab.Firok");</script>
+<script>console.log("Sword Magic Online v <%=SMOMain.version%> by S2Lab.Firok");</script>
 <div id="container"></div> 
 <script type="text/javascript" src="http://api.map.baidu.com/getscript?v=2.0&ak=TTGBXxjhg74WayrWPgAk6pLmqzRHIrX9&services=&t=20171031174121"></script>
 <script> /**
@@ -281,8 +281,10 @@ map.disableDoubleClickZoom(true);
 map.disablePinchToZoom(true);
 map.disableScrollWheelZoom(true);
 
-var loc_x=121.363847;
-var loc_y=37.526844;
+// 初始位置
+var loc_init=<%=ActHandler.F_Qloc(Utils.get(session,"username")) %>;
+var loc_x=loc_init.loc_x;
+var loc_y=loc_init.loc_y;
 
 // 按钮 - 移动
 function btn_click_move_up()
@@ -1007,8 +1009,6 @@ function func_modal_show_shop(idRangeIn)
 <div id="pf-pic"><img src="imgs/icon_player.png"></div>
 
 </div>
-
-
 
 
 <div class="container">
