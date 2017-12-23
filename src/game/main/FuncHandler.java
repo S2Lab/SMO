@@ -78,18 +78,20 @@ public class FuncHandler
 		
 		try
 		{
+			
 			Statement stmt=conn.createStatement();
 			
 			switch(funcIn)
 			{
 			case "resource": // 采集资源
 				
-				DBAPI.Loot_giveLootToPlayer(usernameIn, Integer.valueOf(id_targetIn));
+				DBAPI.Loot_giveLootToPlayer(usernameIn, Integer.valueOf(id_targetIn.trim()));
 				
 				break;
 				
 			case "relax":
-				;
+				DBAPI.Player_HP_Edit(usernameIn, 50);
+				DBAPI.Player_MP_Edit(usernameIn, 50);
 				break;
 			
 			case "check_shop":
@@ -101,6 +103,7 @@ public class FuncHandler
 			case "talk_with":
 				break;
 			case "fight_with":
+				FightHandler.executeFight(usernameIn, Integer.valueOf(id_targetIn.trim()));
 				break;
 			
 			case "make_friends_with":
@@ -142,7 +145,7 @@ public class FuncHandler
 		try
 		{
 			Statement stmt=conn.createStatement();
-			stmt.executeQuery("select * from data_func where id_range="+id_rangeIn+" and func_type='"+funcTypeIn+" and id_target="+id_targetIn);
+			stmt.executeQuery("select * from data_func where id_range="+id_rangeIn+" and func_type='"+funcTypeIn+"' and id_target="+id_targetIn);
 			ResultSet rs=stmt.getResultSet();
 			if(rs.next())
 				return rs.getLong("time_cost");

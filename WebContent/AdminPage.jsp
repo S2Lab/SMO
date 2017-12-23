@@ -83,11 +83,14 @@ if(!act.equals("")) // 有要执行的动作
 			// 删除玩家信息
 			// 删除last_action里的信息
 			// 删除物品栏信息
-			stmt_act.executeUpdate("delete from last_action where username='"+username+"'");
-			stmt_act.executeUpdate("delete from inventory where username='"+username+"'");
-			stmt_act.executeUpdate("delete from player where username='"+username+"'");
-			stmt_act.executeUpdate("delete from accounts where username='"+username+"'");
-			response.sendRedirect("AdminPage.jsp?page=acco");
+			if(!username.equals("root")) // root用户不能被删除
+			{
+				stmt_act.executeUpdate("delete from last_action where username='"+username+"'");
+				stmt_act.executeUpdate("delete from inventory where username='"+username+"'");
+				stmt_act.executeUpdate("delete from player where username='"+username+"'");
+				stmt_act.executeUpdate("delete from accounts where username='"+username+"'");
+				response.sendRedirect("AdminPage.jsp?page=acco");
+			}
 			break;
 			
 		case "set_admin":
@@ -120,6 +123,16 @@ if(!act.equals("")) // 有要执行的动作
 			response.sendRedirect("AdminPage.jsp?page=index");
 			
 			break;
+			
+		case "remove_all_item_by_id":
+			stmt_act.executeUpdate("delete from inventory where id_item="+id_item);
+			response.sendRedirect("AdminPage.jsp?page=inv");
+			break;
+			
+		case "give_all_players_item":
+			// 获取所有玩家
+			
+			// 给予物品
 			
 		default:
 			break;
@@ -280,7 +293,7 @@ table{width:100%;text-align:center}
 		Statement stmt_inv=conn.createStatement();
 		if(!username.equals(""))
 		{
-			stmt_inv.executeQuery("select * from inventory where username='"+username+"'");
+			stmt_inv.executeQuery("select * from inventory where username in ('"+username+"')");
 		}
 		else
 		{
@@ -301,7 +314,34 @@ table{width:100%;text-align:center}
 			<%
 		}
 		
-		%></table><%
+		%></table>
+		
+		<table>
+		<caption>快捷操作</caption>
+			<form action="AdminPage.jsp">
+			<tr>
+				<td>清空服务器上所有指定id的物品</td>
+				<td>id<input type="number" value="0" name="id_item"></td>
+				<td>-</td>
+				<td><input type="submit" value="移除"></td>
+			</tr>
+			<input type="hidden" name="page" value="inv">
+			<input type="hidden" name="act" value="remove_all_item_by_id">
+			</form>
+			
+			<form>
+			<tr>
+				<td>给予所有玩家指定id和数量的物品</td>
+				<td>id<input type="number" value="0" name="id_item"></td>
+				<td>数量<input type="number" value="0" name="amount"></td>
+				<td><input type="submit" value="给予"></td>
+			</tr>
+			<input type="hidden" name="page" value="inv">
+			<input type="hidden" name="act" value="give_all_players_item">
+			</form>
+		</table>
+		
+		<%
 		
 		break;
 	
@@ -310,6 +350,12 @@ table{width:100%;text-align:center}
 		
 	case "acco":
 		%>
+		<div style="width:100%;text-align:center">
+		<form action="AdminPage.jsp">
+		检索特定玩家<input type="text" name="username" value=""><input type="submit" value="检索">
+		<input type="hidden" name="page" value="acco"> </form>
+		</div>
+		
 		<table>
 		
 			<tr>
@@ -327,7 +373,7 @@ table{width:100%;text-align:center}
 			}
 			else
 			{
-				stmt_acco.executeQuery("select * from accounts where username='"+username+"'");
+				stmt_acco.executeQuery("select * from accounts where username in('"+username+"')");
 			}
 			ResultSet rs_acco=stmt_acco.getResultSet();
 			while(rs_acco.next()){
@@ -356,7 +402,7 @@ table{width:100%;text-align:center}
 	
 	</div>
 	
-	<span class="btns" data-toggle="modal" data-target="#modal_input" onclick="btn_click_info()" style="display:inline">修改信息</span>
+	<span class="btns" data-toggle="modal" data-target="#modal_input" onclick="btn_click_info()" style="display:none">修改信息</span>
 	
 	<form action="Admin.jsp">
 		<input type="hidden" name="username" value="">

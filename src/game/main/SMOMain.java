@@ -12,9 +12,9 @@ public class SMOMain {
 	public static Random rand;
 	
 	// 内部版本号
-	public static String version="0.5.6";
+	public static String version="0.5.8";
 	// 考核版本号
-	public static String version_display="assessment 01.00";
+	public static String version_display="assessment 01.02";
 	
 	public static Thread dbKeeper;
 	
@@ -63,6 +63,10 @@ public class SMOMain {
 			log("商店处理机开始初始化");
 			new ShopHandler();
 			log("商店处理机初始化完成");
+			
+			log("战斗处理机开始初始化");
+			new FightHandler();
+			log("战斗处理机初始化完成");
 			
 			log("连接维持器启动");
 			dbKeeper=new Thread(new ConnectionKeeper(600000)); // 每10分钟维持一次连接
@@ -140,6 +144,7 @@ public class SMOMain {
 		{
 			try
 			{
+				log("尝试关闭 "+key+" 的数据连接");
 				DatabaseConnectionManager.conns.get(key).close();
 			}
 			catch(Exception e)

@@ -195,7 +195,7 @@ public class DBAPI {
 		try
 		{
 			Statement stmt=conn.createStatement();
-			stmt.executeUpdate("select mp,mp_limit from player where username='"+usernameIn+"'");
+			stmt.executeQuery("select mp,mp_limit from player where username='"+usernameIn+"'");
 			int mp_old,mp_limit,mp_new;
 			ResultSet rs=stmt.getResultSet();
 			mp_old=rs.getInt("mp");

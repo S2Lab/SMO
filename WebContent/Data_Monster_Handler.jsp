@@ -13,7 +13,7 @@ int amount=0;
 ResultSet rs=stmt.getResultSet();
 while(rs.next())
 {
-	json.accumulate("id_moster", rs.getInt("id_moster"));
+	json.accumulate("id_monster", rs.getInt("id_monster"));
 	json.accumulate("name_monster", rs.getString("name_monster"));
 	json.accumulate("atk_p", rs.getInt("atk_p"));
 	json.accumulate("def_p", rs.getInt("def_p"));

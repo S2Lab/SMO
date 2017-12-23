@@ -699,7 +699,8 @@ function modal_show_func(jsonIn,id_rangeIn)
 	
 	if(jsonIn.result.amounts==1)
 	{
-		target.innerHTML+="<span onclick=\"postExecuteFunc("+id_rangeIn+",'"+jsonIn.result.func_type+"',"+jsonIn.result.id_target+")\">"+getFuncType(jsonIn.result.func_type)+"</span>"
+		target.innerHTML+="<span onclick=\"postExecuteFunc("+id_rangeIn+",'"+jsonIn.result.func_type+"',"+jsonIn.result.id_target+")\">"
+		+getFuncType(jsonIn.result.func_type) +(jsonIn.result.func_type=="fight_with"?" 与 "+getMonsterNameFromLoc(getLocFromMonsterId( jsonIn.result.id_target )):"") +"</span>"
 		+"<br>";
 	}
 	else
@@ -708,7 +709,7 @@ function modal_show_func(jsonIn,id_rangeIn)
 		while(step<jsonIn.result.amounts)
 		{
 			target.innerHTML+="<span onclick=\"postExecuteFunc("+id_rangeIn+",'"+jsonIn.result.func_type[step]+"',"+jsonIn.result.id_target[step]+")\">"
-			+getFuncType(jsonIn.result.func_type[step])+"</span>"
+			+getFuncType(jsonIn.result.func_type[step]) +(jsonIn.result.func_type[step]=="fight_with"?" 与 "+getMonsterNameFromLoc(getLocFromMonsterId( jsonIn.result.id_target[step] )):"") +"</span>"
 			+"<br>";
 			step++;
 		}
@@ -727,6 +728,8 @@ function modal_show_func(jsonIn,id_rangeIn)
 			return "查看商店";
 		case "relax":
 			return "休息";
+		case "fight_with":
+			return "战斗";
 		default:
 			return "未定义";
 		}
@@ -739,6 +742,19 @@ function modal_show_func(jsonIn,id_rangeIn)
 			if(data_range.id_range[step]==idIn)
 				return step;
 		}
+	}
+	// 根据id_monster获取monster名称
+	function getLocFromMonsterId(idIn)
+	{
+		for(let step=0;step<data_monster.amounts;step++)
+		{
+			if(data_monster.id_monster[step]==idIn)
+				return step;
+		}
+	}
+	function getMonsterNameFromLoc(locIn)
+	{
+		return ""+data_monster.name_monster[locIn];
 	}
 	// 执行功能
 	function postExecuteFunc(id_rangeIn,funcTypeIn,id_targetIn)
@@ -810,7 +826,12 @@ function modal_show_func(jsonIn,id_rangeIn)
 			break;
 			
 		case "relax":
-			$("#btn_modal_func").click();
+		case "fight_with":
+			
+			$("#btn_modal_func").click(); // 隐藏模态框
+			str_get=$.get("AJAX_Handler.jsp?act=Arangefunc&id_range="+id_rangeIn+"&func="+funcTypeIn+"&id_target="+id_targetIn,function(){
+				let json_get=JSON.parse(str_get.responseText);
+			});
 			break;
 			
 		default:
@@ -860,7 +881,7 @@ function _refreshSurrs() // 清空所有标记 显示新的标记
 	let str_get_surrs_players=$.get("AJAX_Handler.jsp?act=SQsurrsPlayer",function(){
 		let json_get=JSON.parse(str_get_surrs_players.responseText);
 		let step=0;
-		while(step<json_get.result.amount)
+		while(step<json_get.result.amounts)
 		{
 			_addSurrsPlayer( new BMap.Point(json_get.result.loc_x[step],json_get.result.loc_y[step]) ,step, json_get.result.username[step]+"");
 			step++;
@@ -1131,6 +1152,7 @@ function func_modal_show_shop(idRangeIn)
         <div class="modal-body" id="modal_setting_body">
         
         <div><a href="ShopPage.jsp">商店</a></div>
+        <div><a href="Login.jsp">登出</a></div>
         
         </div>
    

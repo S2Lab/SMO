@@ -155,7 +155,6 @@
 			json.put("status","success");
 			break;
 		case MSG.T_Arangefunc:
-			
 			json.put("result",FuncHandler.executeFunc(username,Utils.get(request,"id_range"),Utils.get(request,"id_target"),Utils.get(request,"func"),"","","",""));
 			json.put("status","success");
 			break;
