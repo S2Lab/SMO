@@ -122,8 +122,10 @@ public class ActHandler{
 		ResultSet rs=stmt.getResultSet();
 		rs.next();
 		json.put("atk_p",rs.getInt("atk_p"));
+		json.put("patk_p", rs.getInt("patk_p"));
 		json.put("def_p",rs.getInt("def_p"));
 		json.put("atk_m",rs.getInt("atk_m"));
+		json.put("patk_m", rs.getInt("patk_m"));
 		json.put("def_m",rs.getInt("def_m"));
 		json.put("speed",rs.getInt("speed"));
 		json.put("acc",rs.getInt("acc"));
@@ -133,7 +135,7 @@ public class ActHandler{
 		json.put("mp_limit",rs.getInt("mp_limit"));
 		json.put("mp_re",rs.getInt("mp_re"));
 		json.put("mp",rs.getInt("mp"));
-		json.put("class",rs.getString("class"));
+		json.put("class_main",rs.getString("class"));
 		json.put("lv",rs.getInt("lv"));
 		json.put("class_sub",rs.getString("class_sub"));
 		json.put("lv_sub",rs.getInt("lv_sub"));

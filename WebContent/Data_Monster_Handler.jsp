@@ -16,8 +16,10 @@ while(rs.next())
 	json.accumulate("id_monster", rs.getInt("id_monster"));
 	json.accumulate("name_monster", rs.getString("name_monster"));
 	json.accumulate("atk_p", rs.getInt("atk_p"));
+	json.accumulate("patk_p", rs.getInt("patk_p"));
 	json.accumulate("def_p", rs.getInt("def_p"));
 	json.accumulate("atk_m", rs.getInt("atk_m"));
+	json.accumulate("patk_m", rs.getInt("patk_m"));
 	json.accumulate("def_m", rs.getInt("def_m"));
 	json.accumulate("speed", rs.getInt("speed"));
 	json.accumulate("acc", rs.getInt("acc"));

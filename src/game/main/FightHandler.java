@@ -1,6 +1,7 @@
 package game.main;
 
 import java.sql.*;
+import java.util.Random;
 
 public class FightHandler {
 	
@@ -8,9 +9,12 @@ public class FightHandler {
 	
 	protected static Connection conn;
 	
+	protected static Random rand;
+	
 	public FightHandler() throws Exception
 	{
 		conn=DatabaseConnectionManager.getConnection("战斗处理机",true);
+		rand=new Random();
 		instance=this;
 	}
 	
@@ -47,9 +51,29 @@ public class FightHandler {
 		ResultFight ret=new ResultFight(false,false);
 		
 		// 真正的计算过程在这里
-		;
+		// atk_p * ( 100 / ( 100 + ( ( def_p - patk_p ) ) ) )
+		
+		int atk_A;
+		int atk_B;
 		
 		return ret;
+	}
+	
+	protected static int getAtk(String classIn,AttrsEntity attrs1,AttrsEntity attrs2)
+	{
+		switch(classIn)
+		{
+		case "magic":
+			
+			return 0;
+			
+		case "acc":
+			return 0;
+			
+		case "sword":
+		default:
+			return 0;
+		}
 	}
 	
 	protected static void executeResultFight(String username1,String username2,ResultFight rfIn)
@@ -73,7 +97,7 @@ public class FightHandler {
 	}
 	private static void executeFight(String username1,String username2)
 	{
-		System.out.println("暂未提供玩家对战功能");
+		System.out.println("暂未提供玩家对战功能 username1="+username1+",username2="+username2);
 		return;
 	}
 }
@@ -109,8 +133,10 @@ class AttrsEntity
 	public String name;
 	
 	public int atk_p;
+	public int patk_p;
 	public int def_p;
 	public int atk_m;
+	public int patk_m;
 	public int def_m;
 	public int speed;
 	public int acc;
@@ -188,8 +214,10 @@ class AttrsEntity
 		try
 		{
 			atk_p=rsIn.getInt("atk_p");
+			patk_p=rsIn.getInt("patk_p");
 			def_p=rsIn.getInt("def_p");
 			atk_m=rsIn.getInt("atk_m");
+			patk_m=rsIn.getInt("patk_m");
 			def_m=rsIn.getInt("def_m");
 			speed=rsIn.getInt("speed");
 			acc=rsIn.getInt("acc");

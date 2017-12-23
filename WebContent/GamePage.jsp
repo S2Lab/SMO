@@ -417,27 +417,49 @@ function btn_click_info()
 }
 function modal_show_info(jsonIn)
 {
+	console.log(jsonIn);
     let target=document.getElementById("modal_info_body");
-    target.innerHTML="";
-    target.innerHTML+="物攻"+jsonIn.result.atk_p+"<br>";
-    target.innerHTML+="物防"+jsonIn.result.def_p+"<br>";
-    target.innerHTML+="魔攻"+jsonIn.result.atk_m+"<br>";
-    target.innerHTML+="魔防"+jsonIn.result.def_m+"<br>";
-    target.innerHTML+="速度"+jsonIn.result.speed+"<br>";
-    target.innerHTML+="命中"+jsonIn.result.acc+"<br>";
-    target.innerHTML+="生命"+jsonIn.result.hp+"<br>";
-    target.innerHTML+="生命上限"+jsonIn.result.hp_limit+"<br>";
-    target.innerHTML+="生命恢复"+jsonIn.result.hp_re+"<br>";
-    target.innerHTML+="魔法"+jsonIn.result.mp+"<br>";
-    target.innerHTML+="魔法上限"+jsonIn.result.mp_limit+"<br>";
-    target.innerHTML+="魔法恢复"+jsonIn.result.mp_re+"<br>";
-    target.innerHTML+="主职业"+jsonIn.result.class+"<br>";
-    target.innerHTML+="主职业等级"+jsonIn.result.lv+"<br>";
-    target.innerHTML+="副职业"+jsonIn.result.class_sub+"<br>";
-    target.innerHTML+="副职业等级"+jsonIn.result.lv_sub+"<br>";
+    target.innerHTML="<table style='width:100%'>"+
+    "<tr><td>物攻</td><td>"+jsonIn.result.atk_p+"</td><td></tr>"+
+    "<tr><td>物穿</td><td>"+jsonIn.result.patk_p+"</td><td></tr>"+
+    "<tr><td>物防</td><td>"+jsonIn.result.def_p+"</td><td></tr>"+
+    "<tr><td>魔攻</td><td>"+jsonIn.result.atk_m+"</td><td></tr>"+
+    "<tr><td>魔穿</td><td>"+jsonIn.result.patk_m+"</td><td></tr>"+
+    "<tr><td>魔防</td><td>"+jsonIn.result.def_m+"</td><td></tr>"+
+    "<tr><td>速度</td><td>"+jsonIn.result.speed+"</td><td></tr>"+
+    "<tr><td>命中</td><td>"+jsonIn.result.acc+"</td><td></tr>"+
+    "<tr><td>生命</td><td>"+jsonIn.result.hp+"</td><td></tr>"+
+    "<tr><td>生命上限</td><td>"+jsonIn.result.hp_limit+"</td><td></tr>"+
+    "<tr><td>生命恢复</td><td>"+jsonIn.result.hp_re+"</td><td></tr>"+
+    "<tr><td>魔法</td><td>"+jsonIn.result.mp+"</td><td></tr>"+
+    "<tr><td>魔法上限</td><td>"+jsonIn.result.mp_limit+"</td><td></tr>"+
+    "<tr><td>魔法恢复</td><td>"+jsonIn.result.mp_re+"</td><td></tr>"+
+    "<tr><td>主职业</td><td>"+getNameClass(jsonIn.result.class_main)+"</td><td></tr>"+
+    "<tr><td>主职业等级</td><td>"+jsonIn.result.lv+"</td><td></tr>"+
+    "<tr><td>副职业</td><td>"+getNameClass(jsonIn.result.class_sub)+"</td><td></tr>"+
+    "<tr><td>副职业等级</td><td>"+jsonIn.result.lv_sub+"</td><td></tr>"+
     
-    target.innerHTML+="<br>";
+    "</table><br>";
 }
+	// 获取职业中文名称
+	function getNameClass(classNameIn)
+	{
+		switch(classNameIn)
+		{
+		case "magic":
+			return "魔法师";
+		case "sword":
+			return "剑士";
+		case "acc":
+			return "刺客";
+			
+		case "craft":
+			return "工匠";
+			
+		default:
+			return "无";
+		}
+	}
 // 按钮 - 背包栏
 function btn_click_inv()
 {
