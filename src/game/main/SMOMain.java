@@ -12,7 +12,7 @@ public class SMOMain {
 	public static Random rand;
 	
 	// 内部版本号
-	public static String version="0.5.9";
+	public static String version="0.5.9 in dev";
 	// 考核版本号
 	public static String version_display="assessment 01.04";
 	
