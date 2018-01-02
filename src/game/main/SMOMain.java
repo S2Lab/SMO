@@ -12,9 +12,9 @@ public class SMOMain {
 	public static Random rand;
 	
 	// 内部版本号
-	public static String version="0.5.9 in dev";
+	public static String version="0.5.11";
 	// 考核版本号
-	public static String version_display="assessment 01.04";
+	public static String version_display="assessment 01.15";
 	
 	public static Thread dbKeeper;
 	
@@ -74,11 +74,61 @@ public class SMOMain {
 			
 			instance=this;
 			log("SMO主机初始化完成");
+			
+			
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 			log("出现错误 终止初始化");
+		}
+		
+		try
+		{
+			log("开始计算月卡反馈");
+			Connection conn=DatabaseConnectionManager.getConnection("月卡反馈", false);
+			Statement stmt=conn.createStatement();
+			log("清空过期月卡权限玩家");
+			stmt.executeUpdate("update accounts set is_vip=false where vip_to < now()");
+			
+			ResultSet rs;
+			
+			// 查看今天是否已经给予反馈
+			rs=stmt.executeQuery("select value from workspace where name='last_award'");
+			rs.next();
+			String last_award=rs.getString("value");
+			long lastTime=Long.valueOf(last_award);
+			java.sql.Date lastDay=new java.sql.Date(lastTime);
+			long currentTime=System.currentTimeMillis();
+			java.sql.Date currentDay=new java.sql.Date(currentTime);
+			
+			// 判断时间
+			if(
+				currentDay.getYear()-lastDay.getYear()>0 || // 过去1年
+				(currentDay.getYear()-lastDay.getYear()==0 && currentDay.getMonth()-lastDay.getMonth()>0) || // 过去1月
+				(currentDay.getYear()-lastDay.getYear()==0 && currentDay.getMonth()-lastDay.getMonth()==0 && currentDay.getDate()-lastDay.getDate()>0) // 过去1天
+				)
+			{
+				// 开始给予物品
+				
+				
+				// 找到所有月卡玩家
+				System.out.print("给予: ");
+				while(rs.next())
+				{
+					System.out.print(rs.getString("username")+" ");
+					DBAPI.Inventory_Edit(rs.getString("username"), 281, -1, 1); // 月卡玩家每天领取一个钱袋
+				}
+				System.out.println(" 月卡回馈内容");
+				
+				
+				// 更新数据库中的给予时间
+				stmt.executeUpdate("update workspace set value='"+currentTime+"' where name='last_award'");
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
 	

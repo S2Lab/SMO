@@ -244,6 +244,29 @@ public class ActHandler{
 	{
 		return "";
 	}
+	
+	public static void F_give_all_players_items(String id_itemIn,String amountIn,String orderIn)
+	{
+		try
+		{
+			Statement stmt=conn.createStatement();
+			ResultSet rs=stmt.executeQuery("select username from accounts");
+			LinkedList<String> usernames=new LinkedList<String>();
+			while(rs.next())
+			{
+				usernames.add(rs.getString("username"));
+			}
+			
+			for(String name:usernames)
+			{
+				DBAPI.Inventory_Edit(name, Integer.valueOf(id_itemIn), Integer.valueOf(orderIn), Integer.valueOf(amountIn));
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 
 
 	public static void close() throws SQLException {

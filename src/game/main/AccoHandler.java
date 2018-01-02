@@ -113,4 +113,33 @@ public class AccoHandler {
 		}
 	}
 
+	
+	public static boolean is_vip(String usernameIn)
+	{
+		try
+		{
+			Statement stmt=conn.createStatement();
+			ResultSet rs=stmt.executeQuery("select is_vip from accounts where username='"+usernameIn+"'");
+			rs.next();
+			return rs.getBoolean("is_vip");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	public static void set_vip(String usernameIn,boolean isIn)
+	{
+		try
+		{
+			Statement stmt=conn.createStatement();
+			java.sql.Date vip_to=new java.sql.Date(System.currentTimeMillis()+2592000000L); // 30天
+			stmt.executeUpdate("update accounts set is_vip="+isIn+ (isIn?",vip_to='"+vip_to.toLocaleString()+"'":"")+ " where username='"+usernameIn+"'");
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 }

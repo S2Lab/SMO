@@ -108,6 +108,17 @@ if(!act.equals("")) // 有要执行的动作
 			response.sendRedirect("AdminPage.jsp?page=acco");
 			break;
 			
+		case "set_vip":
+			AccoHandler.set_vip(username, true);
+			
+			response.sendRedirect("AdminPage.jsp?page=acco");
+			break;
+		case "set_novip":
+			AccoHandler.set_vip(username, false);
+			
+			response.sendRedirect("AdminPage.jsp?page=acco");
+			break;
+			
 		case "edit_sign":
 			break;
 			
@@ -131,7 +142,7 @@ if(!act.equals("")) // 有要执行的动作
 			
 		case "give_all_players_item":
 			// 获取所有玩家
-			
+			ActHandler.F_give_all_players_items(id_item, amount, order);
 			// 给予物品
 			
 		default:
@@ -262,12 +273,39 @@ table{width:100%;text-align:center}
 	
 	case "inv":
 		%>
+		<table>
+		<caption>快捷操作</caption>
+			<form action="AdminPage.jsp">
+			<tr>
+				<td>清空服务器上所有指定id的物品</td>
+				<td>id<input type="number" value="0" name="id_item"></td>
+				<td>-</td>
+				<td><input type="submit" value="移除"></td>
+			</tr>
+			<input type="hidden" name="page" value="inv">
+			<input type="hidden" name="act" value="remove_all_item_by_id">
+			</form>
+			
+			<form>
+			<tr>
+				<td>给予所有玩家指定id和数量的物品</td>
+				<td>id<input type="number" value="0" name="id_item"></td>
+				<td>数量<input type="number" value="0" name="amount"></td>
+				<td>序列码<input type="number" value="0" name="order"></td>
+				<td><input type="submit" value="给予"></td>
+			</tr>
+			<input type="hidden" name="page" value="inv">
+			<input type="hidden" name="act" value="give_all_players_item">
+			</form>
+		</table>
+		
+		
+		
 		<div style="width:100%;text-align:center">
 		<form action="AdminPage.jsp">
 		检索特定玩家<input type="text" name="username" value=""><input type="submit" value="检索">
 		<input type="hidden" name="page" value="inv"> </form>
 		</div>
-		
 		
 		<table> 
 		<caption>背包列表</caption>
@@ -316,30 +354,8 @@ table{width:100%;text-align:center}
 		
 		%></table>
 		
-		<table>
-		<caption>快捷操作</caption>
-			<form action="AdminPage.jsp">
-			<tr>
-				<td>清空服务器上所有指定id的物品</td>
-				<td>id<input type="number" value="0" name="id_item"></td>
-				<td>-</td>
-				<td><input type="submit" value="移除"></td>
-			</tr>
-			<input type="hidden" name="page" value="inv">
-			<input type="hidden" name="act" value="remove_all_item_by_id">
-			</form>
-			
-			<form>
-			<tr>
-				<td>给予所有玩家指定id和数量的物品</td>
-				<td>id<input type="number" value="0" name="id_item"></td>
-				<td>数量<input type="number" value="0" name="amount"></td>
-				<td><input type="submit" value="给予"></td>
-			</tr>
-			<input type="hidden" name="page" value="inv">
-			<input type="hidden" name="act" value="give_all_players_item">
-			</form>
-		</table>
+		
+		
 		
 		<%
 		
@@ -362,6 +378,7 @@ table{width:100%;text-align:center}
 				<td>用户名</td>
 				<td>权限</td>
 				<td><!-- 改权限用的按钮 --></td>
+				<td><!-- 改权限用的按钮 --></td>
 				<td><!-- 删账号的按钮 --></td>
 				<td>创建时间</td>
 			</tr>
@@ -378,17 +395,28 @@ table{width:100%;text-align:center}
 			ResultSet rs_acco=stmt_acco.getResultSet();
 			while(rs_acco.next()){
 				boolean is_admin=rs_acco.getString("permission").equals("admin");
+				boolean is_vip=rs_acco.getBoolean("is_vip");
+				
+				if(rs_acco.getString("username").trim().equals("root"))
+					continue;
 			%>
 				<tr>
 					<td><%=rs_acco.getString("username") %></td>
-					<td><%=is_admin?"管理员":"玩家" %></td>
+					<td><%=is_admin?"管理员":"玩家" %>  |  <%=is_vip?"月卡VIP 至"+rs_acco.getString("vip_to"):"普通" %></td>
 					<td><a href="AdminPage.jsp?username=<%=rs_acco.getString("username")%>&act=set_<%=is_admin?"player":"admin"%>"><button>设为<%=is_admin?"玩家":"管理员" %></button></a></td>
+					<td><a href="AdminPage.jsp?username=<%=rs_acco.getString("username")%>&act=set_<%=is_vip?"novip":"vip"%>"><button>设为<%=is_vip?"普通账户":"月卡VIP账户" %></button></a></td>
 					<td><a href="AdminPage.jsp?username=<%=rs_acco.getString("username")%>&act=delete_acco"><button>删除账号</button></a></td>
 					<td><%=rs_acco.getString("create_time") %></td>
 				</tr>
 			<%}
 			%>
-		
+				<tr>
+					<td>root</td>
+					<td>根用户</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
 		
 		</table>		
 		<%

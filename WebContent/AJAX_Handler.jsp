@@ -1,7 +1,5 @@
 <%@page import="game.main.*,servlet.*,java.sql.*,net.sf.json.*"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-
+<%@page language="java" contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 	new SMOMain();
 
